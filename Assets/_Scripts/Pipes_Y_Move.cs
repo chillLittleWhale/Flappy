@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Pipes_Y_Move : MonoBehaviour
@@ -11,7 +9,6 @@ public class Pipes_Y_Move : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Pipes_Y_Move");
         direction = Random.Range(0, 2) == 1 ? 1 : -1;
     }
 
