@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
 
-namespace AjaxNguyen
+namespace AjaxNguyen.Core.UI
 {
     public class UI_Lobby : MonoBehaviour
     {

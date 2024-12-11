@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class GameAssets : MonoBehaviour
 {
-    private static GameAssets instance;
+    private static GameAssets Instance;
 
     public static GameAssets GetInstance()
     {
-        return instance;
+        return Instance;
     }
 
     void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
 

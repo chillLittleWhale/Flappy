@@ -1,22 +1,25 @@
 using UnityEngine;
 
-public class Window_Waiting : MonoBehaviour
+namespace AjaxNguyen.Core.UI
 {
-    void OnEnable()
+    public class Window_Waiting : MonoBehaviour
     {
-        Level.GetInstance().OnStateChange += TurnOffSelf;
-    }
-
-    private void OnDisable()
-    {
-        Level.GetInstance().OnStateChange -= TurnOffSelf;
-    }
-
-    private void TurnOffSelf(object sender, GameState e)
-    {
-        if (e == GameState.Playing)
+        void OnEnable()
         {
-            gameObject.SetActive(false);
+            Level.Instance.OnStateChange += TurnOffSelf;
+        }
+
+        private void OnDisable()
+        {
+            Level.Instance.OnStateChange -= TurnOffSelf;
+        }
+
+        private void TurnOffSelf(object sender, GameState e)
+        {
+            if (e == GameState.Playing)
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

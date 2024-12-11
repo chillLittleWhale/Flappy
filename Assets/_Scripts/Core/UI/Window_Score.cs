@@ -1,29 +1,32 @@
 using TMPro;
 using UnityEngine;
 
-public class Window_Score : MonoBehaviour
+namespace AjaxNguyen.Core.UI
 {
-    private TextMeshProUGUI scoreText;
-    private TextMeshProUGUI highestScoreText;
-
-    void Awake()
+    public class Window_Score : MonoBehaviour
     {
-        scoreText = transform.Find("CurrentScore").GetComponent<TextMeshProUGUI>();
-        highestScoreText = transform.Find("HighestScore").GetComponent<TextMeshProUGUI>();
-    }
+        private TextMeshProUGUI scoreText;
+        private TextMeshProUGUI highestScoreText;
 
-    private void OnEnable()
-    {
-        Level.GetInstance().OnScoreChanged += UpdateUI;
-    }
+        void Awake()
+        {
+            scoreText = transform.Find("CurrentScore").GetComponent<TextMeshProUGUI>();
+            highestScoreText = transform.Find("HighestScore").GetComponent<TextMeshProUGUI>();
+        }
 
-    private void OnDisable()
-    {
-        Level.GetInstance().OnScoreChanged -= UpdateUI;
-    }
+        private void OnEnable()
+        {
+            Level.Instance.OnScoreChanged += UpdateUI;
+        }
 
-    private void UpdateUI(object sender, int e)
-    {
-        scoreText.text = e.ToString();
+        private void OnDisable()
+        {
+            Level.Instance.OnScoreChanged -= UpdateUI;
+        }
+
+        private void UpdateUI(object sender, int e)
+        {
+            scoreText.text = e.ToString();
+        }
     }
 }
