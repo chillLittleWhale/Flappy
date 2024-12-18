@@ -35,9 +35,12 @@ namespace AjaxNguyen
 
         public void UpdateUI()
         {
-            textName.text = reward.skinData.name;
+            // textName.text = reward.skinData.name;
+            textName.text = reward.skinName;
+
             textStatus.text = reward.isUnlocked ? "Unlocked" : "Locked";
-            image.sprite = reward.skinData.skinIcon;
+            // image.sprite = reward.skinData.skinIcon;
+            image.sprite = reward.skinIcon;
         }
 
     }

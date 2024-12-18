@@ -5,119 +5,95 @@ using UnityEngine;
 
 namespace AjaxNguyen.Core.Manager
 {
-    // public class SaveLoadManager : PersistentSingleton<SaveLoadManager>
-    // {
-    //     private const string DATA_FILE_NAME = "FlappyData";
-
-    //     public GameData gameData;
-    //     JsonDataService dataService;
-
-    //     public event EventHandler<GameData> OnGameDataChanged;
-
-    //     protected override void Awake()
-    //     {
-    //         base.Awake();
-
-    //         gameData = new();
-    //         dataService = new();
-    //     }
-
-    //     private void Start()
-    //     {
-    //         // ResourceManager.Instance.OnResourceDataChanged += UpdateResourceData;
-    //         LoadGameData();
-    //         OnGameDataChanged?.Invoke(this, gameData);
-    //     }
-
-
-    //     private void OnDestroy()
-    //     {
-    //         SaveGameData();
-    //     }
-
-    //     private void UpdateResourceData(object sender, ResourceData e)
-    //     {
-    //         gameData.resourceData = e;
-    //     }
-
-    //     public void SaveGameData() => dataService.Save(gameData);
-
-    //     public void LoadGameData() => gameData = dataService.Load(DATA_FILE_NAME);
-
-    //     public void CallInvoke() => OnGameDataChanged?.Invoke(this, gameData);
-
-    //     // public void AddListenerForDataChange(EventHandler<GameData> listener)
-    //     // {
-    //     //     OnGameDataChanged += listener;
-    //     //     // Gọi lại ngay lập tức để cập nhật UI với dữ liệu hiện tại
-    //     //     OnGameDataChanged.Invoke(this, gameData);
-    //     // }
-
-    // }
-
-
     public class SaveLoadManager : PersistentSingleton<SaveLoadManager>
     {
         private const string FILE_NAME_RESOURCE = "ResourceData";
+        private const string FILE_NAME_SKIN = "SkinData";
 
         public ResourceData resourceData;
+        public SkinData skinData;
 
         JsonDataService dataService;
 
-        public event EventHandler<ResourceData> OnResourceDataChanged;
+        // public event EventHandler<ResourceData> OnResourceDataChanged; //--
+        public event EventHandler<SkinData> OnSkinDataChanged; //--
+
 
         protected override void Awake()
         {
             base.Awake();
 
             resourceData = new();
+            skinData = new();
+
             dataService = new();
         }
 
         private void Start()
         {
-            LoadAllGameData(); // load all data
+            LoadAllGameData();
 
-            OnResourceDataChanged?.Invoke(this, resourceData);
-            
-            // Set data to all chill manager  vì lần đầu lấy dữ liệu thì các manager chưa kịp đăng ký
+            // OnResourceDataChanged?.Invoke(this, resourceData); //--
+            OnSkinDataChanged?.Invoke(this, skinData);
+
+            // Set data thủ công cho các chill manager  vì lần đầu lấy dữ liệu thì các manager chưa kịp đăng ký
+            //TODO: cho hết vào 1 hàm cho gọn
             ResourceManager.Instance.SetData(resourceData);
+            SkinManager.Instance.SetData(skinData);
 
         }
 
-
-        // private void OnDestroy()
-        // {
-        //     SaveGameData();
-        // }
-
-        // private void UpdateResourceData(object sender, ResourceData e)
-        // {
-        //     resourceData = e;
-        // }
-
-        // public void SaveGameData() // save từng cụm data
-        // {
-        //     dataService.Save(resourceData, FILE_NAME_RESOURCE);
-        // }
-
-        public void LoadAllGameData()  // load lần lượt từng cụm data
+        public void LoadAllGameData()
         {
             resourceData = dataService.Load<ResourceData>(FILE_NAME_RESOURCE);
+            skinData = dataService.Load<SkinData>(FILE_NAME_SKIN); //TODO
         }
 
-        public void TrySaveResourceData(ResourceData data) 
+        // public void TrySaveResourceData(ResourceData data)  // TODO: đổi return type của các hàm TrySave thành bool để các manager xử lý
+        // {
+        //     if (dataService.Save(data, FILE_NAME_RESOURCE)) // save success
+        //     {
+        //         resourceData = data;
+        //         OnResourceDataChanged?.Invoke(this, resourceData);
+        //     }
+        //     else
+        //     {
+        //         Debug.LogWarning("Save resource data fail");
+        //     }
+        // }
+        public bool TrySaveResourceData(ResourceData data)
         {
-            if(dataService.Save(data, FILE_NAME_RESOURCE)) // save success
+            if (dataService.Save(data, FILE_NAME_RESOURCE)) // save success
             {
                 resourceData = data;
-                OnResourceDataChanged?.Invoke(this, resourceData);
+                // OnResourceDataChanged?.Invoke(this, resourceData);
+                return true;
             }
+
+            Debug.LogWarning("Save resource data fail");
+            return false;
         }
-        public void CallInvoke()
+
+        public bool TrySaveSkinData(SkinData data)
         {
-            OnResourceDataChanged?.Invoke(this, resourceData);
+            if (dataService.Save(data, FILE_NAME_SKIN))
+            {
+                skinData = data;
+                // OnSkinDataChanged?.Invoke(this, skinData);
+                return true;
+            }
+            
+            return false;
         }
+        // public bool TrySaveSkinData(SkinData data)
+        // {
+        //     return dataService.Save(data, FILE_NAME_SKIN);
+        // }
+
+        // public void CallInvoke()  // sử dụng bởi các UI
+        // {
+        //     // OnResourceDataChanged?.Invoke(this, resourceData); //--
+        // }
     }
 
 }

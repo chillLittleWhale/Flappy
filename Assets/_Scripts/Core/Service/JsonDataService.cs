@@ -67,7 +67,7 @@ namespace AjaxNguyen.Core.Service
 
             if (!File.Exists(fileLocation))
             {
-                Debug.Log($"No existed GameData with name '{name}', create new one.");
+                Debug.LogWarning($"No existed GameData with name '{name}', create new one."); //TODO: 
                 return new T();
             }
 

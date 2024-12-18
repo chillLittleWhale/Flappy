@@ -1,21 +1,27 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using AjaxNguyen.Core.SO;
 using UnityEngine;
 
 namespace AjaxNguyen.Core
 {
     [Serializable]
-    public class Skin //: MonoBehaviour
+    public class Skin 
     {
-        public SkinSO skinData;
+        public string id;
+        public string skinName;
+        public Sprite skinIcon;
+        public int unlockCost;
         public bool isUnlocked;
 
-        public Skin(SkinSO data, bool isUnlocked)
+        public Skin(string id, string name, Sprite icon, int cost, bool isUnlocked)
         {
-            skinData = data;
-            this.isUnlocked = isUnlocked;   
+            this.id = id;
+            this.skinName = name;
+            this.skinIcon = icon;
+            this.unlockCost = cost;
+            this.isUnlocked = isUnlocked;
+        }
+
+        public Skin(){
         }
     }
 }
