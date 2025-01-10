@@ -8,6 +8,7 @@ TagManager:
   - ForeGround
   - Pipe
   - Point
+  - CloudSpawner
   layers:
   - Default
   - TransparentFX

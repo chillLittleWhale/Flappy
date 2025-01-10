@@ -1,4 +1,6 @@
 using System;
+using AjaxNguyen.Core.Manager;
+using AjaxNguyen.Core.ObjectPooling;
 using UnityEngine;
 
 namespace AjaxNguyen.Core
@@ -12,8 +14,9 @@ namespace AjaxNguyen.Core
         private const float GROUND_HEIGHT = 15f;
         private const float MIN_HEIGHT_TO_EDGE = 5f;
 
-        [SerializeField] private Transform startPoint;
-        [SerializeField] private GameObject pipes;
+        [SerializeField] private PipeSpawner pipeSpawner;
+        // [SerializeField] private Transform startPoint;
+        // [SerializeField] private GameObject pipes;
 
         [SerializeField] float pipeInterval = 1.8f;
         [SerializeField] float Y_move_rate = 0f;
@@ -27,7 +30,7 @@ namespace AjaxNguyen.Core
         private int playerScore = 0;
 
         private GameState state;
-        private bool canHorirontalMove;
+        private bool canVerticalMove;
         private float ySpawnPos;
         #endregion
 
@@ -43,8 +46,9 @@ namespace AjaxNguyen.Core
 
         private void Level_OnPlayerDeath(object sender, System.EventArgs e)
         {
-            state = GameState.GameOver;
-            OnStateChange?.Invoke(this, state);
+            // state = GameState.GameOver;
+            // OnStateChange?.Invoke(this, state);
+            ChangeState(GameState.GameOver);
         }
         #endregion
 
@@ -58,6 +62,8 @@ namespace AjaxNguyen.Core
 
         void Start()
         {
+            MapManager.Instance.LoadMap();
+
             SetDifficulty(Difficulty.Easy);
             timer = pipeInterval;
         }
@@ -81,8 +87,9 @@ namespace AjaxNguyen.Core
             {
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.M) || Input.GetMouseButtonDown(1))
                 {
-                    state = GameState.Playing;
-                    OnStateChange?.Invoke(this, state);
+                    // state = GameState.Playing;
+                    // OnStateChange?.Invoke(this, state);
+                    ChangeState(GameState.Playing);
                 }
             }
         }
@@ -103,22 +110,36 @@ namespace AjaxNguyen.Core
         #region Other methods
         private void CreatePipes()
         {
+            // ySpawnPos = UnityEngine.Random.Range(-CAM_OTHOR_SIZE + gapSize * 0.5f + GROUND_HEIGHT + MIN_HEIGHT_TO_EDGE, CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE);
+            // canHorirontalMove = UnityEngine.Random.Range(0f, 100f) < Y_move_rate;
+
+            // var newPipe = PoolManager.Instance.GetFromPool(pipes.gameObject);
+            // newPipe.transform.position = startPoint.position;
+
+            // var pipesController = newPipe.GetComponent<PipesController>();
+            // pipesController.SetupPipe(gapSize, ySpawnPos, canHorirontalMove, pipe_y_speed,
+            //     -CAM_OTHOR_SIZE + gapSize * 0.5f + MIN_HEIGHT_TO_EDGE + GROUND_HEIGHT,
+            //     CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE);
+
+            // newPipe.GetComponent<HorizontalMove>().SetUp(pipe_x_speed);
             ySpawnPos = UnityEngine.Random.Range(-CAM_OTHOR_SIZE + gapSize * 0.5f + GROUND_HEIGHT + MIN_HEIGHT_TO_EDGE, CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE);
-            canHorirontalMove = UnityEngine.Random.Range(0f, 100f) < Y_move_rate;
+            canVerticalMove = UnityEngine.Random.Range(0f, 100f) < Y_move_rate;
 
-            // var newPipe = Instantiate(pipes, startPoint.position, Quaternion.identity);
-            var newPipe = PoolManager.Instance.GetFromPool(pipes.gameObject);
-            newPipe.transform.position = startPoint.position;
+            var minHeight = -CAM_OTHOR_SIZE + gapSize * 0.5f + MIN_HEIGHT_TO_EDGE + GROUND_HEIGHT;
+            var maxHeight = CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE;
 
-            var pipesController = newPipe.GetComponents<PipesController>();
-            pipesController[0].SetupPipe(gapSize, ySpawnPos, canHorirontalMove, pipe_y_speed,
-                CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE,
-                -CAM_OTHOR_SIZE + gapSize * 0.5f + MIN_HEIGHT_TO_EDGE + GROUND_HEIGHT);
-
-            newPipe.GetComponent<HorizontalMove>().SetUp(pipe_x_speed);
+            pipeSpawner.CreatePipes(gapSize, ySpawnPos, canVerticalMove, pipe_x_speed, pipe_y_speed, minHeight, maxHeight); 
         }
 
         public GameState GetState() => state;
+
+        private void ChangeState(GameState newState)
+        {
+            if (state == newState) return;
+
+            state = newState;
+            OnStateChange?.Invoke(this, state);
+        }
 
         public int GetPlayerScore() => playerScore;
 
@@ -135,24 +156,24 @@ namespace AjaxNguyen.Core
             switch (difficulty)
             {
                 case Difficulty.Easy:
-                    gapSize = 40f;
-                    pipeInterval = 2f;
+                    gapSize = 32f;
+                    pipeInterval = 3f;
                     Y_move_rate = 0f;
                     break;
                 case Difficulty.Medium:
                     gapSize = 25f;
-                    pipeInterval = 1.8f;
+                    pipeInterval = 2.8f;
                     Y_move_rate = 25f;
                     pipe_y_speed = 3f;
                     break;
                 case Difficulty.Hard:
                     gapSize = 20f;
-                    pipeInterval = 1.6f;
+                    pipeInterval = 2f;
                     Y_move_rate = 50f;
                     pipe_y_speed = 10f;
                     break;
                 case Difficulty.Extreme:
-                    gapSize = 15f;
+                    gapSize = 16f;
                     pipeInterval = 1.8f;
                     Y_move_rate = 100f;
                     pipe_y_speed = 30f;

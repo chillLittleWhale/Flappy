@@ -35,6 +35,7 @@ namespace AjaxNguyen.Core
 
         void Start()
         {
+            // SkinManager.Instance.OnSkinDataChanged += null; //todo
             Level.Instance.OnStateChange += Player_OnStateChange;
         }
 

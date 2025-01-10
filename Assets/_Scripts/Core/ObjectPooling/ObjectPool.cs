@@ -1,40 +1,44 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool
+namespace AjaxNguyen.Core.ObjectPooling
 {
-    private Stack<GameObject> stack = new Stack<GameObject>();
-    private GameObject baseObj;
-    private GameObject tmp;
-    private ReturnToPool returnPool;
-
-    public ObjectPool(GameObject baseObj)
+    public class ObjectPool
     {
-        this.baseObj = baseObj;
-    }
+        private Stack<GameObject> stack = new Stack<GameObject>();
+        private GameObject baseObj;
+        private GameObject tmp;
+        private ReturnToPool returnPool;
 
-    public GameObject GetFromPool()
-    {
-        if (stack.Count > 0)
+        public ObjectPool(GameObject baseObj)
         {
-            tmp = stack.Pop();
-            tmp.SetActive(true);
+            this.baseObj = baseObj;
+        }
+
+        public GameObject GetFromPool()
+        {
+            if (stack.Count > 0)
+            {
+                tmp = stack.Pop();
+                tmp.SetActive(true);
+                return tmp;
+            }
+
+            tmp = GameObject.Instantiate(baseObj);
+            returnPool = tmp.AddComponent<ReturnToPool>();
+            returnPool.pool = this;
             return tmp;
         }
-        
-        tmp = GameObject.Instantiate(baseObj);
-        returnPool = tmp.AddComponent<ReturnToPool>();
-        returnPool.pool = this;
-        return tmp;
+
+        public void AddToPool(GameObject obj)
+        {
+            stack.Push(obj);
+        }
+
+        public int GetNumber()
+        {
+            return stack.Count;
+        }
     }
 
-    public void AddToPool(GameObject obj)
-    {
-        stack.Push(obj);
-    }
-
-    public int GetNumber(){
-        return stack.Count;
-    }
 }

@@ -9,14 +9,13 @@ namespace AjaxNguyen.Core.Manager
     {
         private const string FILE_NAME_RESOURCE = "ResourceData";
         private const string FILE_NAME_SKIN = "SkinData";
+        private const string FILE_NAME_MAP = "MapData";
 
         public ResourceData resourceData;
-        public SkinData skinData;
+        public SkinDataJson skinData;
+        public MapDataJson mapData;
 
         JsonDataService dataService;
-
-        // public event EventHandler<ResourceData> OnResourceDataChanged; //--
-        public event EventHandler<SkinData> OnSkinDataChanged; //--
 
 
         protected override void Awake()
@@ -25,6 +24,7 @@ namespace AjaxNguyen.Core.Manager
 
             resourceData = new();
             skinData = new();
+            mapData = new();
 
             dataService = new();
         }
@@ -33,40 +33,26 @@ namespace AjaxNguyen.Core.Manager
         {
             LoadAllGameData();
 
-            // OnResourceDataChanged?.Invoke(this, resourceData); //--
-            OnSkinDataChanged?.Invoke(this, skinData);
-
             // Set data thủ công cho các chill manager  vì lần đầu lấy dữ liệu thì các manager chưa kịp đăng ký
             //TODO: cho hết vào 1 hàm cho gọn
             ResourceManager.Instance.SetData(resourceData);
             SkinManager.Instance.SetData(skinData);
+            MapManager.Instance.SetData(mapData);
 
         }
 
         public void LoadAllGameData()
         {
             resourceData = dataService.Load<ResourceData>(FILE_NAME_RESOURCE);
-            skinData = dataService.Load<SkinData>(FILE_NAME_SKIN); //TODO
+            skinData = dataService.Load<SkinDataJson>(FILE_NAME_SKIN); //TODO
+            mapData = dataService.Load<MapDataJson>(FILE_NAME_MAP);
         }
 
-        // public void TrySaveResourceData(ResourceData data)  // TODO: đổi return type của các hàm TrySave thành bool để các manager xử lý
-        // {
-        //     if (dataService.Save(data, FILE_NAME_RESOURCE)) // save success
-        //     {
-        //         resourceData = data;
-        //         OnResourceDataChanged?.Invoke(this, resourceData);
-        //     }
-        //     else
-        //     {
-        //         Debug.LogWarning("Save resource data fail");
-        //     }
-        // }
         public bool TrySaveResourceData(ResourceData data)
         {
             if (dataService.Save(data, FILE_NAME_RESOURCE)) // save success
             {
                 resourceData = data;
-                // OnResourceDataChanged?.Invoke(this, resourceData);
                 return true;
             }
 
@@ -74,26 +60,42 @@ namespace AjaxNguyen.Core.Manager
             return false;
         }
 
-        public bool TrySaveSkinData(SkinData data)
+        // public bool TrySaveSkinData(SkinData data)
+        // {
+        //     if (dataService.Save(data, FILE_NAME_SKIN))
+        //     {
+        //         skinData = data;
+        //         return true;
+        //     }
+
+        //     Debug.LogWarning("Save skin data fail");
+        //     return false;
+        // }
+
+        public bool TrySaveSkinData(SkinDataJson data)
         {
             if (dataService.Save(data, FILE_NAME_SKIN))
             {
                 skinData = data;
-                // OnSkinDataChanged?.Invoke(this, skinData);
                 return true;
             }
-            
+
+            Debug.LogWarning("Save skin data fail");
             return false;
         }
-        // public bool TrySaveSkinData(SkinData data)
-        // {
-        //     return dataService.Save(data, FILE_NAME_SKIN);
-        // }
 
-        // public void CallInvoke()  // sử dụng bởi các UI
-        // {
-        //     // OnResourceDataChanged?.Invoke(this, resourceData); //--
-        // }
+        public bool TrySaveMapData(MapDataJson data)
+        {
+            if (dataService.Save(data, FILE_NAME_MAP))
+            {
+                mapData = data;
+                return true;
+            }
+
+            Debug.LogWarning("Save map data fail");
+            return false;
+        }
+
     }
 
 }

@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class ReturnToPool : MonoBehaviour
+namespace AjaxNguyen.Core.ObjectPooling
 {
-    public ObjectPool pool;
-
-    public void OnDisable()
+    public class ReturnToPool : MonoBehaviour
     {
-        pool.AddToPool(gameObject);
+        public ObjectPool pool;
+
+        public void OnDisable()
+        {
+            pool.AddToPool(gameObject);
+        }
     }
 }

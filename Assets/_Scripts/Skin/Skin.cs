@@ -24,4 +24,17 @@ namespace AjaxNguyen.Core
         public Skin(){
         }
     }
+
+    [Serializable]
+    public class SkinJson 
+    {
+        public string id;
+        public bool isUnlocked;
+
+        public SkinJson(string id, bool isUnlocked)
+        {
+            this.id = id;
+            this.isUnlocked = isUnlocked;
+        }
+    }
 }

@@ -4,21 +4,22 @@ namespace AjaxNguyen.Core
 {
     public class HorizontalMove : MonoBehaviour
     {
-        private float speed;
-        private bool started = false;
+        [SerializeField] float speed;
+        [SerializeField] bool active = false;
 
         void Update()
         {
-            if (started)
-            {
-                transform.position += speed * Time.deltaTime * Vector3.left;
-            }
+            if (!active) return;
+
+            transform.position += speed * Time.deltaTime * Vector3.left;
         }
 
-        public void SetUp(float speed)
+        public void SetSpeed(float speed)
         {
-            started = true;
+            // active = true;
             this.speed = speed;
         }
+
+        public void SetActive(bool active) => this.active = active; 
     }
 }

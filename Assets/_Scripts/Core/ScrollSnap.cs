@@ -23,7 +23,7 @@ namespace AjaxNguyen.Core
 
         void Start()
         {
-            itemCount = SkinManager.Instance.data.skinList.Count;
+            itemCount = SkinManager.Instance.data.skinList.Count;  // TODO: vi phạm nghiêm trọng solid
             SetUpContentPading();
         }
 

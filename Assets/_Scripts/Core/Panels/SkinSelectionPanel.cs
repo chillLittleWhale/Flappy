@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using AjaxNguyen.Core.Manager;
 using AjaxNguyen.Core.UI;
@@ -20,8 +18,6 @@ namespace AjaxNguyen.Core.Panels
         public RectTransform prefabItem;  // item mẫu để lấy width cho tính toán
         public HorizontalLayoutGroup h_LayoutGroup;
 
-        // private 
-        // [SerializeField] List<Skin> skinList;
         [SerializeField] SkinData data;
 
         private int unlockedSkinCount = 1;
@@ -40,12 +36,10 @@ namespace AjaxNguyen.Core.Panels
         void OnEnable()
         {
             SnapToChild(data.skinList.FindIndex(skin => skin.id == data.selectedSkinID), data.skinList.Count);
-
         }
 
         void Reload(object sender, SkinData e)
         {
-
             PopulateItems();
             UpdateUI_SkinCount();
         }
@@ -78,7 +72,14 @@ namespace AjaxNguyen.Core.Panels
         public void OnButtonClick_Select()
         {
             var rawIndex = Mathf.RoundToInt((GetCurrentCenterPos() - (h_LayoutGroup.spacing + h_LayoutGroup.padding.left)) / (prefabItem.rect.width + h_LayoutGroup.spacing));
-            data.selectedSkinID = Mathf.Clamp(rawIndex, 0, data.skinList.Count -1).ToString();
+            int finalIndex = Mathf.Clamp(rawIndex, 0, data.skinList.Count -1);
+            var newSelectedId = data.skinList[finalIndex].id;
+
+            if ( newSelectedId == data.selectedSkinID ) return;
+
+            data.selectedSkinID = newSelectedId;
+            SkinManager.Instance.ReSelectSkin(newSelectedId);
+
         }
 
         private float GetCurrentCenterPos()  // điểm trung tâm trên tọa độ trục x của content panel
@@ -87,7 +88,7 @@ namespace AjaxNguyen.Core.Panels
         }
 
         private void SnapToChild(int index, int childNumber)
-        {   // vì khi start thì contentPanel.rect.width đang bằng 0 do child của nó sẽ bị clear bởi hàm PopulateItems của CharacterPanel
+        {   // vì khi start thì contentPanel.rect.width đang bằng 0 do child của nó sẽ bị clear bởi hàm PopulateItems của CharacterPanel, nên phải tự tính
             var contentPanelWith = h_LayoutGroup.padding.left * 2f + childNumber * prefabItem.rect.width + (childNumber - 1) * h_LayoutGroup.spacing;
             var targetPosX = -(index * (prefabItem.rect.width + h_LayoutGroup.spacing) + (h_LayoutGroup.spacing + h_LayoutGroup.padding.left) - contentPanelWith * 0.5f);
 
