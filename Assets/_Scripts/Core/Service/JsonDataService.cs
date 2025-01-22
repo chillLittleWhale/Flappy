@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace AjaxNguyen.Core.Service
@@ -48,30 +49,39 @@ namespace AjaxNguyen.Core.Service
 
         public bool Save<T>(T data, string name, bool overwrite = true)
         {
-            string fileLocation = GetPathToFile(name);
+            string path = GetPathToFile(name);
 
-            if (!overwrite && File.Exists(fileLocation))
+            if (!overwrite && File.Exists(path))
             {
-                // throw new IOException($"The file '{name}.{fileExtension}' already exists and cannot be overwritten.");
                 Debug.LogWarning($"The file '{name}.{fileExtension}' already exists and cannot be overwritten.");
                 return false;
             }
 
-            File.WriteAllText(fileLocation, serializer.Serialize(data));
+            // File.WriteAllText(fileLocation, serializer.Serialize(data));
+            File.WriteAllText(path, JsonConvert.SerializeObject(data)); // testing
             return true;
         }
 
-        public T Load<T>(string name) where T : new()
+        public T Load<T>(string name) //where T : new()
         {
-            string fileLocation = GetPathToFile(name);
+            string path = GetPathToFile(name);
 
-            if (!File.Exists(fileLocation))
+            if (!File.Exists(path))
             {
                 Debug.LogWarning($"No existed GameData with name '{name}', create new one."); //TODO: 
-                return new T();
+                return default;//new T();
             }
 
-            return serializer.Deserialize<T>(File.ReadAllText(fileLocation));
+            // return serializer.Deserialize<T>(File.ReadAllText(fileLocation));
+            try
+            {
+            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Load JsonData Fail due to: {ex.Message} {ex.StackTrace}");
+                return default;
+            }
         }
 
         public void Delete(string name)

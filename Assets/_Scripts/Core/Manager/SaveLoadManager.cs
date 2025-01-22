@@ -1,6 +1,12 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AjaxNguyen.Core.Service;
 using AjaxNguyen.Utility;
+using Newtonsoft.Json;
+using Unity.Services.CloudSave;
+using Unity.Services.CloudSave.Models;
 using UnityEngine;
 
 namespace AjaxNguyen.Core.Manager
@@ -15,7 +21,7 @@ namespace AjaxNguyen.Core.Manager
         public SkinDataJson skinData;
         public MapDataJson mapData;
 
-        JsonDataService dataService;
+        JsonDataService jsonDataService;
 
 
         protected override void Awake()
@@ -26,12 +32,12 @@ namespace AjaxNguyen.Core.Manager
             skinData = new();
             mapData = new();
 
-            dataService = new();
+            jsonDataService = new();
         }
 
-        private void Start()
+        private async Task Start()
         {
-            LoadAllGameData();
+            LoadAllGameData_Local();
 
             // Set data thủ công cho các chill manager  vì lần đầu lấy dữ liệu thì các manager chưa kịp đăng ký
             //TODO: cho hết vào 1 hàm cho gọn
@@ -39,63 +45,76 @@ namespace AjaxNguyen.Core.Manager
             SkinManager.Instance.SetData(skinData);
             MapManager.Instance.SetData(mapData);
 
+            // testing load and save data from cloudSave
+            await Task.Delay(1000); // đợi authen xong
+            // await TrysaveData_Cloud<ResourceData>(FILE_NAME_RESOURCE);
+            // await TrysaveData_Cloud<SkinDataJson>(FILE_NAME_SKIN);
+            // await TrysaveData_Cloud<MapDataJson>(FILE_NAME_MAP);
+            await LoadAllGameData_Cloud();
         }
 
-        public void LoadAllGameData()
+        public void LoadAllGameData_Local()
         {
-            resourceData = dataService.Load<ResourceData>(FILE_NAME_RESOURCE);
-            skinData = dataService.Load<SkinDataJson>(FILE_NAME_SKIN); //TODO
-            mapData = dataService.Load<MapDataJson>(FILE_NAME_MAP);
+            resourceData = jsonDataService.Load<ResourceData>(FILE_NAME_RESOURCE);
+            skinData = jsonDataService.Load<SkinDataJson>(FILE_NAME_SKIN); //TODO
+            mapData = jsonDataService.Load<MapDataJson>(FILE_NAME_MAP);
         }
 
-        public bool TrySaveResourceData(ResourceData data)
+        async Task LoadAllGameData_Cloud() // testing
         {
-            if (dataService.Save(data, FILE_NAME_RESOURCE)) // save success
+            try
             {
-                resourceData = data;
-                return true;
-            }
+                var loadData = await CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string> { FILE_NAME_RESOURCE, FILE_NAME_SKIN, FILE_NAME_MAP });
 
-            Debug.LogWarning("Save resource data fail");
-            return false;
+                if (loadData.TryGetValue("ResourceData", out var resourceItem))
+                {
+                    resourceData = resourceItem.Value.GetAs<ResourceData>();
+                }
+                else
+                {
+                    Debug.LogError($"Data with key '{FILE_NAME_RESOURCE}' not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error loading data from Cloud Save: {ex.Message}");
+            }
         }
 
-        // public bool TrySaveSkinData(SkinData data)
-        // {
-        //     if (dataService.Save(data, FILE_NAME_SKIN))
-        //     {
-        //         skinData = data;
-        //         return true;
-        //     }
-
-        //     Debug.LogWarning("Save skin data fail");
-        //     return false;
-        // }
-
-        public bool TrySaveSkinData(SkinDataJson data)
+        async Task TrysaveData_Cloud<T>(string fileName)
         {
-            if (dataService.Save(data, FILE_NAME_SKIN))
-            {
-                skinData = data;
-                return true;
-            }
+            T iData = jsonDataService.Load<T>(fileName);
 
-            Debug.LogWarning("Save skin data fail");
-            return false;
+            var saveData = new Dictionary<string, object>
+            {
+                { fileName, iData }
+            };
+
+            try
+            {
+                await CloudSaveService.Instance.Data.Player.SaveAsync(saveData);
+                Debug.Log($"CloudSave: save {fileName} SUCCESS");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"CloudSave: save {fileName} FAIL: {e.Message}");
+            }
         }
 
-        public bool TrySaveMapData(MapDataJson data)
+        public bool TrySaveData_Local<T>(T data, string fileName)
         {
-            if (dataService.Save(data, FILE_NAME_MAP))
-            {
-                mapData = data;
-                return true;
-            }
+            if (jsonDataService.Save(data, fileName)) return true; // save success
 
-            Debug.LogWarning("Save map data fail");
+            Debug.LogWarning($"LocalSave: save {fileName} FAIL");
             return false;
         }
 
     }
 
 }
+
+// PlayerInfo playerInfo = await AuthenticationService.Instance.GetPlayerInfoAsync();
+// Debug.Log("Player info: ");
+// Debug.Log("id: " + playerInfo.Id);
+// Debug.Log("playerInfo.Username: " + playerInfo.Username);
+// Debug.Log("creation time: " + playerInfo.CreatedAt);

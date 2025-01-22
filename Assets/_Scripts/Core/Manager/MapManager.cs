@@ -67,7 +67,8 @@ namespace AjaxNguyen.Core.Manager
         {
             tempDataJson = ToSkinDataJson(data);
 
-            if (SaveLoadManager.Instance.TrySaveMapData(tempDataJson))
+            // if (SaveLoadManager.Instance.TrySaveMapData(tempDataJson))
+            if (SaveLoadManager.Instance.TrySaveData_Local<MapDataJson>(tempDataJson,"MapData")) 
             {
                 this.data = data;
                 OnMapDataChanged?.Invoke(this, data);

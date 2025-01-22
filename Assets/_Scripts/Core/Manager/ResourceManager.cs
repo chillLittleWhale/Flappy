@@ -11,14 +11,9 @@ namespace AjaxNguyen.Core.Manager
 
         private ResourceData tempData;  // when save load error occurs, this will make sure the real data is not be effected
 
-        void Start()
-        {
-            // SaveLoadManager.Instance.OnResourceDataChanged += UpdateResourceData; //--
-        }
-
-        // private void UpdateResourceData(object sender, ResourceData e)
+        // void Start()
         // {
-        //     data = e;
+        //     // SaveLoadManager.Instance.OnResourceDataChanged += UpdateResourceData; //--
         // }
 
         public void AddResource(ResourceType resourceType, int amount)
@@ -88,7 +83,8 @@ namespace AjaxNguyen.Core.Manager
 
         private void TrySaveData(ResourceData data)
         {
-            if (SaveLoadManager.Instance.TrySaveResourceData(data))
+            // if (SaveLoadManager.Instance.TrySaveResourceData(data))
+            if (SaveLoadManager.Instance.TrySaveData_Local<ResourceData>(data,"ResourceData")) 
             {
                 this.data = data;
                 OnResourceDataChanged?.Invoke(this, data);

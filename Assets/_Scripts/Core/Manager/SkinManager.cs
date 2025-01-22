@@ -62,7 +62,8 @@ namespace AjaxNguyen.Core.Manager
         {
             tempDataJson = ToSkinDataJson(data);
 
-            if (SaveLoadManager.Instance.TrySaveSkinData(tempDataJson))
+            // if (SaveLoadManager.Instance.TrySaveSkinData(tempDataJson))
+            if (SaveLoadManager.Instance.TrySaveData_Local<SkinDataJson>(tempDataJson,"SkinData")) 
             {
                 this.data = data;
                 OnSkinDataChanged?.Invoke(this, data);
