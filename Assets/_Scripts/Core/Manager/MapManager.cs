@@ -68,7 +68,7 @@ namespace AjaxNguyen.Core.Manager
             tempDataJson = ToSkinDataJson(data);
 
             // if (SaveLoadManager.Instance.TrySaveMapData(tempDataJson))
-            if (SaveLoadManager.Instance.TrySaveData_Local<MapDataJson>(tempDataJson,"MapData")) 
+            if (SaveLoadManager.Instance.TrySaveData_Local<MapDataJson>(tempDataJson,"MapData")) //TODO: sau cho hết mấy cái string này vào file config
             {
                 this.data = data;
                 OnMapDataChanged?.Invoke(this, data);

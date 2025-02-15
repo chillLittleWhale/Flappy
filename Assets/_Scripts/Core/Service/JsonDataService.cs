@@ -58,7 +58,7 @@ namespace AjaxNguyen.Core.Service
             }
 
             // File.WriteAllText(fileLocation, serializer.Serialize(data));
-            File.WriteAllText(path, JsonConvert.SerializeObject(data)); // testing
+            File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.Indented)); // testing
             return true;
         }
 

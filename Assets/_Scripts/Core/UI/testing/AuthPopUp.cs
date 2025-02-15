@@ -1,6 +1,9 @@
+using System.Threading.Tasks;
 using AjaxNguyen.Core.Manager;
 using AjaxNguyen.Core.UI;
+using AjaxNguyen.Event;
 using TMPro;
+using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,11 +11,16 @@ namespace AjaxNguyen
 {
     public class AuthPopUp : Panel
     {
+        [SerializeField] BoolEventChanel onLoginOnline;
+
         [SerializeField] TMP_InputField nameIpF;
         [SerializeField] TMP_InputField passwordIpF;
         [SerializeField] Button signInButton;
         [SerializeField] Button signUpButton;
         [SerializeField] Button signInAnonymousButton;
+
+
+        private bool isSigningIn = false;
 
         public override void Initialize()
         {
@@ -29,16 +37,53 @@ namespace AjaxNguyen
             passwordIpF.text = "";
         }
 
+        // private async void SignIn()
+        // {
+        //     string name = nameIpF.text.Trim();
+        //     string password = passwordIpF.text.Trim();
+
+        //     if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(password))
+        //     {
+        //         await AuthManager.Instance.SignInWithUsernameAndPasswordAsync(name, password);
+
+        //         while (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerId))
+        //         {
+        //             await Task.Delay(50);; // Chờ
+        //         }
+
+        //         PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
+        //         onLoginOnline.Raise(true);
+        //         return;
+        //     }
+        // }
+
+        
+
         private async void SignIn()
         {
+            if (isSigningIn) return; // Ngăn chặn nhiều lần đăng nhập
+            isSigningIn = true;
+
             string name = nameIpF.text.Trim();
             string password = passwordIpF.text.Trim();
 
             if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(password))
             {
                 await AuthManager.Instance.SignInWithUsernameAndPasswordAsync(name, password);
+
+                while (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerId))
+                {
+                    await Task.Delay(50); // Chờ thông tin PlayerID được cập nhật
+                }
+
+                PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
+                onLoginOnline.Raise(true);
             }
+
+            isSigningIn = false; // Cho phép đăng nhập lại nếu cần
         }
+
+
         private async void SignUp()
         {
             string name = nameIpF.text.Trim();
@@ -49,10 +94,13 @@ namespace AjaxNguyen
                 if (IsPasswordValid(password))
                 {
                     await AuthManager.Instance.SignUpWithUsernameAndPasswordAsync(name, password);
+
+                    PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
+
                 }
                 else
                 {
-                    PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.None,"Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+                    PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.None, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
                 }
             }
         }

@@ -27,6 +27,8 @@ namespace AjaxNguyen
         private void SignOut()
         {
             AuthManager.Instance.SignOut();
+            PlayerPrefs.DeleteKey("CurrentAccountID");
+            PlayerPrefs.Save();
         }
 
         private void UpdateUI()

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Unity.Services.CloudSave;
 using Unity.Services.CloudSave.Models;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 namespace AjaxNguyen.Core.Manager
 {
@@ -35,7 +36,37 @@ namespace AjaxNguyen.Core.Manager
             jsonDataService = new();
         }
 
-        private async Task Start()
+        public void StartSetUpData(bool isUsingCloudData)
+        {
+            Debug.Log("StartSetUpData");
+            StartCoroutine(SetUpDataCoroutine(isUsingCloudData));
+        }
+
+        private IEnumerator SetUpDataCoroutine(bool isUsingCloudData)
+        {
+            var task = SetUpData(isUsingCloudData);
+            while (!task.IsCompleted)
+            {
+                yield return null; // Đợi đến khi Task hoàn thành
+            }
+        }
+
+
+        public async Task SetUpData(bool isUsingCloudData)
+        {
+            if (isUsingCloudData)
+            {
+                Debug.Log("Seting up using cloud data ...");
+                await SetUpUsingCloudData();
+            }
+            else
+            {
+                Debug.Log("Seting up using local data ...");
+                SetUpUsingLocalData();
+            }
+        }
+
+        private void SetUpUsingLocalData()
         {
             LoadAllGameData_Local();
 
@@ -44,23 +75,28 @@ namespace AjaxNguyen.Core.Manager
             ResourceManager.Instance.SetData(resourceData);
             SkinManager.Instance.SetData(skinData);
             MapManager.Instance.SetData(mapData);
+        }
 
-            // testing load and save data from cloudSave
-            await Task.Delay(1000); // đợi authen xong
-            // await TrysaveData_Cloud<ResourceData>(FILE_NAME_RESOURCE);
-            // await TrysaveData_Cloud<SkinDataJson>(FILE_NAME_SKIN);
-            // await TrysaveData_Cloud<MapDataJson>(FILE_NAME_MAP);
+        private async Task SetUpUsingCloudData()
+        {
             await LoadAllGameData_Cloud();
+
+            TrySaveData_Local(resourceData, FILE_NAME_RESOURCE);
+            TrySaveData_Local(skinData, FILE_NAME_SKIN);
+            TrySaveData_Local(mapData, FILE_NAME_MAP);
+
+            SetUpUsingLocalData();
         }
 
         public void LoadAllGameData_Local()
         {
+            Debug.Log("Local data loading ...");
             resourceData = jsonDataService.Load<ResourceData>(FILE_NAME_RESOURCE);
             skinData = jsonDataService.Load<SkinDataJson>(FILE_NAME_SKIN); //TODO
             mapData = jsonDataService.Load<MapDataJson>(FILE_NAME_MAP);
         }
 
-        async Task LoadAllGameData_Cloud() // testing
+        async Task LoadAllGameData_Cloud()
         {
             try
             {
@@ -73,6 +109,24 @@ namespace AjaxNguyen.Core.Manager
                 else
                 {
                     Debug.LogError($"Data with key '{FILE_NAME_RESOURCE}' not found.");
+                }
+
+                if (loadData.TryGetValue("SkinData", out var skinItem))
+                {
+                    skinData = skinItem.Value.GetAs<SkinDataJson>();
+                }
+                else
+                {
+                    Debug.LogError($"Data with key '{FILE_NAME_SKIN}' not found.");
+                }
+
+                if (loadData.TryGetValue("MapData", out var mapItem))
+                {
+                    mapData = mapItem.Value.GetAs<MapDataJson>();
+                }
+                else
+                {
+                    Debug.LogError($"Data with key '{FILE_NAME_MAP}' not found.");
                 }
             }
             catch (Exception ex)

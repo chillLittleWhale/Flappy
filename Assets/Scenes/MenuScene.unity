@@ -13500,7 +13500,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &999350179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13514,6 +13514,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnparentOnAwake: 1
+  onLoginOnline: {fileID: 11400000, guid: 590ae50f755f0ab488b5a3b00d14ff23, type: 2}
 --- !u!4 &999350180
 Transform:
   m_ObjectHideFlags: 0
@@ -18131,7 +18132,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 956.51196, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1318003438
@@ -19943,7 +19944,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 557.44214, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1459816565
@@ -24590,6 +24591,7 @@ MonoBehaviour:
   isInitialized: 0
   isOpening: 0
   container: {fileID: 1609711132}
+  onLoginOnline: {fileID: 11400000, guid: 590ae50f755f0ab488b5a3b00d14ff23, type: 2}
   nameIpF: {fileID: 1870668013}
   passwordIpF: {fileID: 1244452304}
   signInButton: {fileID: 1227487009}
@@ -25600,7 +25602,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 170.66739, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1816760784
@@ -28527,6 +28529,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1973273783}
   - component: {fileID: 1973273784}
+  - component: {fileID: 1973273785}
   m_Layer: 0
   m_Name: SaveLoad_Manager
   m_TagString: Untagged
@@ -28572,6 +28575,34 @@ MonoBehaviour:
   mapData:
     mapList: []
     selectedMapID: 0
+--- !u!114 &1973273785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973273782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be604b76ea716474191a7f514978fa99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventChanel: {fileID: 11400000, guid: 590ae50f755f0ab488b5a3b00d14ff23, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1973273784}
+        m_TargetAssemblyTypeName: AjaxNguyen.Core.Manager.SaveLoadManager, Assembly-CSharp
+        m_MethodName: StartSetUpData
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1986281321
 GameObject:
   m_ObjectHideFlags: 0
