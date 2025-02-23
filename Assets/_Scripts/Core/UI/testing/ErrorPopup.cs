@@ -47,7 +47,7 @@ namespace AjaxNguyen
                     await AuthManager.Instance.SignInAnonymousAsync();
                     break;
                 case Action.OpenAuthMenu:
-                    PanelManager.Instance.OpenPanel("auth");
+                    PanelManager.Instance.OpenPanel(PanelType.Authen);
                     break;
                 default:
                     break;

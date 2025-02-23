@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using AjaxNguyen.Core.UI;
 using AjaxNguyen.Utility;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace AjaxNguyen.Core.Manager
 {
     public class PanelManager : PersistentSingleton<PanelManager>
     {
-        private Dictionary<string, Panel> panels = new Dictionary<string, Panel>();
+        private Dictionary<PanelType, Panel> panels = new Dictionary<PanelType, Panel>();
         private bool isInitialized = false;
         private Canvas[] canvas = null;
 
@@ -16,8 +17,19 @@ namespace AjaxNguyen.Core.Manager
         protected override void Awake()
         {
             base.Awake();
+            SceneManager.sceneLoaded += OnSceneLoaded;
             Initialize();
+        }
 
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            isInitialized = false;
+            Initialize(); // Cập nhật lại Dictionary khi scene load
+        }
+
+        private void OnDestroy()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded; // Hủy đăng ký khi bị destroy
         }
 
         private void Initialize()
@@ -41,7 +53,7 @@ namespace AjaxNguyen.Core.Manager
                 {
                     for (int j = 0; j < panelList.Length; j++)
                     {
-                        if (!string.IsNullOrEmpty(panelList[j].ID) && !panels.ContainsKey(panelList[j].ID))
+                        if (!panels.ContainsKey(panelList[j].ID)) //!string.IsNullOrEmpty(panelList[j].ID) && 
                         {
                             panelList[j].Initialize();
                             panels.Add(panelList[j].ID, panelList[j]);
@@ -51,12 +63,12 @@ namespace AjaxNguyen.Core.Manager
             }
         }
 
-        public Panel GetPanel(string panelID)
+        public Panel GetPanel(PanelType panelID)
         {
             return Instance.panels.ContainsKey(panelID) ? Instance.panels[panelID] : null;
         }
 
-        public void OpenPanel(string panelID)
+        public void OpenPanel(PanelType panelID)
         {
             Panel panel = GetPanel(panelID);
             if (panel != null)
@@ -69,8 +81,8 @@ namespace AjaxNguyen.Core.Manager
             }
         }
 
-        public void ClosePanel(string panelID)
-        { 
+        public void ClosePanel(PanelType panelID)
+        {
             Panel panel = GetPanel(panelID);
             if (panel != null)
             {
@@ -90,13 +102,13 @@ namespace AjaxNguyen.Core.Manager
             }
         }
 
-        public static bool IsPanelOpen(string panelID)
+        public static bool IsPanelOpen(PanelType panelID)
         {
             if (Instance.panels.ContainsKey(panelID))
             {
                 return Instance.panels[panelID].IsOpening;
             }
-            
+
             else
             {
                 Debug.LogWarning("Panel with ID: " + panelID + " not found.");
@@ -106,7 +118,7 @@ namespace AjaxNguyen.Core.Manager
 
         public void ShowErrorPopup(ErrorPopup.Action action = ErrorPopup.Action.None, string message = "lmao")
         {
-            ErrorPopup errorPopup = (ErrorPopup) GetPanel("error");
+            ErrorPopup errorPopup = (ErrorPopup)GetPanel(PanelType.ErrorPopup);
             errorPopup.Open(action, message);
         }
     }

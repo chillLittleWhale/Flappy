@@ -1,14 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using AjaxNguyen.Core.Service;
+using AjaxNguyen.Event;
 using AjaxNguyen.Utility;
 using Newtonsoft.Json;
 using Unity.Services.CloudSave;
-using Unity.Services.CloudSave.Models;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 namespace AjaxNguyen.Core.Manager
 {
@@ -24,6 +24,7 @@ namespace AjaxNguyen.Core.Manager
 
         JsonDataService jsonDataService;
 
+        [SerializeField] EmptyEventChanel onFinishSetUpData;
 
         protected override void Awake()
         {
@@ -51,7 +52,6 @@ namespace AjaxNguyen.Core.Manager
             }
         }
 
-
         public async Task SetUpData(bool isUsingCloudData)
         {
             if (isUsingCloudData)
@@ -75,15 +75,15 @@ namespace AjaxNguyen.Core.Manager
             ResourceManager.Instance.SetData(resourceData);
             SkinManager.Instance.SetData(skinData);
             MapManager.Instance.SetData(mapData);
+
+            onFinishSetUpData.Raise(new Empty());
         }
 
         private async Task SetUpUsingCloudData()
         {
             await LoadAllGameData_Cloud();
 
-            TrySaveData_Local(resourceData, FILE_NAME_RESOURCE);
-            TrySaveData_Local(skinData, FILE_NAME_SKIN);
-            TrySaveData_Local(mapData, FILE_NAME_MAP);
+            TrySaveAllData_Local();
 
             SetUpUsingLocalData();
         }
@@ -92,7 +92,7 @@ namespace AjaxNguyen.Core.Manager
         {
             Debug.Log("Local data loading ...");
             resourceData = jsonDataService.Load<ResourceData>(FILE_NAME_RESOURCE);
-            skinData = jsonDataService.Load<SkinDataJson>(FILE_NAME_SKIN); //TODO
+            skinData = jsonDataService.Load<SkinDataJson>(FILE_NAME_SKIN);
             mapData = jsonDataService.Load<MapDataJson>(FILE_NAME_MAP);
         }
 
@@ -135,7 +135,65 @@ namespace AjaxNguyen.Core.Manager
             }
         }
 
-        async Task TrysaveData_Cloud<T>(string fileName)
+        public void ResetAllData_Local()
+        {
+            try
+            {
+                string rawData = File.ReadAllText(Path.Combine(Application.persistentDataPath, "DefaultData.json"));
+
+                var defaultJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData);
+                Debug.Log($"defaultJson: {defaultJson}");
+
+                // Ghi đè ResourceData.json 
+                if (defaultJson.ContainsKey("ResourceData"))
+                {
+                    var tempData = JsonConvert.DeserializeObject<ResourceData>(defaultJson["ResourceData"].ToString());
+                    jsonDataService.Save(tempData, FILE_NAME_RESOURCE);
+                    Debug.Log("ResourceData.json đã được reset!");
+                }
+
+                // Ghi đè SkinData.json 
+                if (defaultJson.ContainsKey("SkinData"))
+                {
+                    var tempData = JsonConvert.DeserializeObject<SkinDataJson>(defaultJson["SkinData"].ToString());
+                    jsonDataService.Save(tempData, FILE_NAME_SKIN);
+                    Debug.Log("SkinData.json đã được reset!");
+                }
+
+                // Ghi đè MapData.json 
+                if (defaultJson.ContainsKey("MapData"))
+                {
+                    var tempData = JsonConvert.DeserializeObject<SkinDataJson>(defaultJson["MapData"].ToString());
+                    jsonDataService.Save(tempData, FILE_NAME_MAP);
+                    Debug.Log("SkinData.json đã được reset!");
+                }
+
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Lỗi khi reset dữ liệu: {ex.Message}");
+            }
+        }
+
+        bool TrySaveAllData_Local()
+        {
+            return (
+                TrySaveData_Local(resourceData, FILE_NAME_RESOURCE) &&
+                TrySaveData_Local(skinData, FILE_NAME_SKIN) &&
+                TrySaveData_Local(mapData, FILE_NAME_MAP)
+            );
+        }
+
+        async Task<bool> TrySaveAllData_Cloud()
+        {
+            return (
+                await TrysaveData_Cloud<ResourceData>(FILE_NAME_RESOURCE) &&
+                await TrysaveData_Cloud<SkinDataJson>(FILE_NAME_SKIN) &&
+                await TrysaveData_Cloud<MapDataJson>(FILE_NAME_MAP)
+            );
+        }
+
+        async Task<bool> TrysaveData_Cloud<T>(string fileName)
         {
             T iData = jsonDataService.Load<T>(fileName);
 
@@ -148,10 +206,12 @@ namespace AjaxNguyen.Core.Manager
             {
                 await CloudSaveService.Instance.Data.Player.SaveAsync(saveData);
                 Debug.Log($"CloudSave: save {fileName} SUCCESS");
+                return true;
             }
             catch (System.Exception e)
             {
                 Debug.LogWarning($"CloudSave: save {fileName} FAIL: {e.Message}");
+                return false;
             }
         }
 
@@ -163,12 +223,19 @@ namespace AjaxNguyen.Core.Manager
             return false;
         }
 
+        public async void HandleUserLogout()
+        {
+            bool saveSuccess = await TrySaveAllData_Cloud();
+
+            if (saveSuccess)
+            {
+                ResetAllData_Local();
+            }
+            else
+            {
+                Debug.LogError("Lưu dữ liệu lên cloud thất bại! Không reset local data.");
+            }
+        }
+
     }
-
 }
-
-// PlayerInfo playerInfo = await AuthenticationService.Instance.GetPlayerInfoAsync();
-// Debug.Log("Player info: ");
-// Debug.Log("id: " + playerInfo.Id);
-// Debug.Log("playerInfo.Username: " + playerInfo.Username);
-// Debug.Log("creation time: " + playerInfo.CreatedAt);

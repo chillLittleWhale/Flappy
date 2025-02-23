@@ -11,8 +11,6 @@ namespace AjaxNguyen
 {
     public class AuthPopUp : Panel
     {
-        [SerializeField] BoolEventChanel onLoginOnline;
-
         [SerializeField] TMP_InputField nameIpF;
         [SerializeField] TMP_InputField passwordIpF;
         [SerializeField] Button signInButton;
@@ -21,6 +19,7 @@ namespace AjaxNguyen
 
 
         private bool isSigningIn = false;
+        private bool isSigningUp = false;
 
         public override void Initialize()
         {
@@ -37,28 +36,6 @@ namespace AjaxNguyen
             passwordIpF.text = "";
         }
 
-        // private async void SignIn()
-        // {
-        //     string name = nameIpF.text.Trim();
-        //     string password = passwordIpF.text.Trim();
-
-        //     if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(password))
-        //     {
-        //         await AuthManager.Instance.SignInWithUsernameAndPasswordAsync(name, password);
-
-        //         while (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerId))
-        //         {
-        //             await Task.Delay(50);; // Chờ
-        //         }
-
-        //         PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
-        //         onLoginOnline.Raise(true);
-        //         return;
-        //     }
-        // }
-
-        
-
         private async void SignIn()
         {
             if (isSigningIn) return; // Ngăn chặn nhiều lần đăng nhập
@@ -71,21 +48,18 @@ namespace AjaxNguyen
             {
                 await AuthManager.Instance.SignInWithUsernameAndPasswordAsync(name, password);
 
-                while (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerId))
-                {
-                    await Task.Delay(50); // Chờ thông tin PlayerID được cập nhật
-                }
-
-                PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
-                onLoginOnline.Raise(true);
+                PanelManager.Instance.ClosePanel(PanelType.Authen);
             }
 
-            isSigningIn = false; // Cho phép đăng nhập lại nếu cần
+            isSigningIn = false;
         }
 
 
         private async void SignUp()
         {
+            if (isSigningUp) return;
+            isSigningUp = true;
+
             string name = nameIpF.text.Trim();
             string password = passwordIpF.text.Trim();
 
@@ -94,15 +68,14 @@ namespace AjaxNguyen
                 if (IsPasswordValid(password))
                 {
                     await AuthManager.Instance.SignUpWithUsernameAndPasswordAsync(name, password);
-
-                    PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
-
                 }
                 else
                 {
                     PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.None, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
                 }
             }
+
+            isSigningUp = false;
         }
 
         private async void SignInAnonymous()

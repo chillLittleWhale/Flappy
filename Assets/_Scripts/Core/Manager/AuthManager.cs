@@ -8,14 +8,18 @@ using System;
 using System.Collections.Generic;
 using AjaxNguyen.Core.Service;
 using AjaxNguyen.Event;
+using AjaxNguyen.Core.UI;
 
 namespace AjaxNguyen.Core.Manager
 {
     public class AuthManager : PersistentSingleton<AuthManager>
     {
-        [SerializeField] BoolEventChanel onLoginOnline;
+        [SerializeField] BoolEventChanel onLogin; //true = online, false = offline
+        [SerializeField] EmptyEventChanel onSignout;
+
         private bool eventInitiated = false;
         private bool isSigningIn = false;
+        private bool isSigningUp = false;
 
         JsonDataService dataService;
 
@@ -44,7 +48,7 @@ namespace AjaxNguyen.Core.Manager
             if (!string.IsNullOrEmpty(savedAccountId)) // Người dùng đã đăng nhập trước đó, tải dữ liệu cục bộ
             {
                 Debug.Log("No network connection. Starting game in offline mode with saved playerId: " + savedAccountId + ".");
-                onLoginOnline.Raise(false); // Saveload sẽ nhận event này và quyết định cách tải dữ liệu
+                onLogin.Raise(false); // Saveload sẽ nhận event này và quyết định cách tải dữ liệu
             }
             else
             {
@@ -59,51 +63,6 @@ namespace AjaxNguyen.Core.Manager
             await InitializeUGS();
             await AutoLogIn();  //TODO: chua chac da log in thanh cong o day
         }
-
-        // public async Task InitializeUGS()
-        // {
-        //     try
-        //     {
-        //         if (UnityServices.State != ServicesInitializationState.Uninitialized)
-        //         {
-        //             Debug.Log("UGS is already initialized or initializing.");
-        //             return;
-        //         }
-        //         else //if (UnityServices.State == ServicesInitializationState.Uninitialized)
-        //         {
-        //             var option = new InitializationOptions();
-        //             option.SetProfile("default_profile");
-        //             await UnityServices.InitializeAsync(option);
-        //         }
-
-        //         if (!eventInitiated)
-        //         {
-        //             SetupEvents();
-        //         }
-
-        //         if (AuthenticationService.Instance.IsSignedIn)
-        //         {
-        //             PanelManager.Instance.OpenPanel("main");
-        //             Debug.Log("main panel");
-        //         }
-        //         else if (AuthenticationService.Instance.SessionTokenExists)
-        //         {
-        //             await SignInAnonymousAsync();
-        //         }
-        //         else
-        //         {
-        //             PanelManager.Instance.OpenPanel("auth");
-        //             Debug.Log("auth panel");
-        //         }
-
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.StartSevice, "Failed to conect to network ");
-        //         Debug.Log(e.Message);
-        //     }
-
-        // }
 
         public async Task InitializeUGS()
         {
@@ -139,23 +98,21 @@ namespace AjaxNguyen.Core.Manager
         {
             if (AuthenticationService.Instance.IsSignedIn)
             {
-                PanelManager.Instance.OpenPanel("main");
-                Debug.Log("main panel");
-                onLoginOnline.Raise(false);
+                PanelManager.Instance.OpenPanel(PanelType.MainMenu);
+                onLogin.Raise(false);
             }
             else if (AuthenticationService.Instance.SessionTokenExists)
             {
-                // await SignInAnonymousAsync();
-                if (await SignInAnonymousAsync()) onLoginOnline.Raise(false);
+                if (await SignInAnonymousAsync()) onLogin.Raise(false);
                 else
                 {
-                    PanelManager.Instance.OpenPanel("auth");
+                    PanelManager.Instance.OpenPanel(PanelType.Authen);
                 }
 
             }
             else
             {
-                PanelManager.Instance.OpenPanel("auth");
+                PanelManager.Instance.OpenPanel(PanelType.Authen);
                 Debug.Log("auth panel");
             }
         }
@@ -166,7 +123,7 @@ namespace AjaxNguyen.Core.Manager
             try
             {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                PanelManager.Instance.OpenPanel("main");
+                PanelManager.Instance.OpenPanel(PanelType.MainMenu);
                 return true;
             }
             catch (AuthenticationException e)
@@ -199,7 +156,16 @@ namespace AjaxNguyen.Core.Manager
             try
             {
                 await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
-                await Task.Delay(100);
+
+                while (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerId))
+                {
+                    await Task.Delay(50); // Chờ thông tin PlayerID được cập nhật
+                }
+
+                PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
+                onLogin.Raise(true);
+
+                PanelManager.Instance.OpenPanel(PanelType.MainMenu);
             }
             catch (AuthenticationException e)
             {
@@ -217,10 +183,21 @@ namespace AjaxNguyen.Core.Manager
 
         public async Task SignUpWithUsernameAndPasswordAsync(string username, string password)
         {
+            if (isSigningUp) return;
+            isSigningUp = true;
+
             try
             {
                 await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
-                PanelManager.Instance.OpenPanel("main");
+
+                while (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerId))
+                {
+                    await Task.Delay(50);
+                }
+
+                PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
+
+                PanelManager.Instance.OpenPanel(PanelType.MainMenu);
             }
             catch (AuthenticationException e)
             {
@@ -230,13 +207,21 @@ namespace AjaxNguyen.Core.Manager
             {
                 Debug.LogError($"SignUpWithUsernameAndPassword Failed: {e.Message}");
             }
+            finally { isSigningUp = false; }
         }
 
-        public void SignOut()
+        public async Task SignOut()
         {
+            PlayerPrefs.DeleteKey("CurrentAccountID");
+            PlayerPrefs.Save();
+
+            onSignout.Raise(new Empty());
+            await Task.Delay(1000);  // đợi cho các listenner thực hiện hết
+
             AuthenticationService.Instance.SignOut(true);  // để true để nó xóa hết credential
+
             PanelManager.Instance.CloseAllPanels();
-            PanelManager.Instance.OpenPanel("auth");
+            PanelManager.Instance.OpenPanel(PanelType.Authen);
         }
 
         private void SetupEvents()
@@ -255,7 +240,7 @@ namespace AjaxNguyen.Core.Manager
             AuthenticationService.Instance.SignedOut += () =>
             {
                 Debug.Log("SetupEvents: Player signed out.");
-                PanelManager.Instance.OpenPanel("auth");
+                PanelManager.Instance.OpenPanel(PanelType.Authen);
             };
 
             AuthenticationService.Instance.Expired += async () =>

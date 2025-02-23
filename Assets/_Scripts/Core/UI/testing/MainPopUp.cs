@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using AjaxNguyen.Core.Manager;
 using AjaxNguyen.Core.UI;
 using TMPro;
@@ -24,11 +25,9 @@ namespace AjaxNguyen
             UpdateUI();
         }
 
-        private void SignOut()
+        private async void SignOut()
         {
-            AuthManager.Instance.SignOut();
-            PlayerPrefs.DeleteKey("CurrentAccountID");
-            PlayerPrefs.Save();
+            await AuthManager.Instance.SignOut();
         }
 
         private void UpdateUI()

@@ -8,7 +8,6 @@ namespace AjaxNguyen.Core.Service
 {
     public class JsonDataService
     {
-        JsonSerializer serializer = new();
         string dataPath;
         string fileExtension = "json";
 
@@ -22,31 +21,6 @@ namespace AjaxNguyen.Core.Service
             return Path.Combine(dataPath, string.Concat(fileName, ".", fileExtension));
         }
 
-        // public void Save(GameData data, bool overwrite = true)
-        // {
-        //     string fileLocation = GetPathToFile(data.fileName);
-
-        //     if (!overwrite && File.Exists(fileLocation))
-        //     {
-        //         throw new IOException($"The file '{data.fileName}.{fileExtension}' already exists and cannot be overwritten.");
-        //     }
-
-        //     File.WriteAllText(fileLocation, serializer.Serialize(data));
-        // }
-
-        // public GameData Load(string name)
-        // {
-        //     string fileLocation = GetPathToFile(name);
-
-        //     if (!File.Exists(fileLocation))
-        //     {
-        //         Debug.Log($"No existed GameData with name '{name}', create new one.");
-        //         return new GameData();
-        //     }
-
-        //     return serializer.Deserialize<GameData>(File.ReadAllText(fileLocation));
-        // }
-
         public bool Save<T>(T data, string name, bool overwrite = true)
         {
             string path = GetPathToFile(name);
@@ -57,8 +31,7 @@ namespace AjaxNguyen.Core.Service
                 return false;
             }
 
-            // File.WriteAllText(fileLocation, serializer.Serialize(data));
-            File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.Indented)); // testing
+            File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.Indented)); 
             return true;
         }
 
@@ -72,7 +45,6 @@ namespace AjaxNguyen.Core.Service
                 return default;//new T();
             }
 
-            // return serializer.Deserialize<T>(File.ReadAllText(fileLocation));
             try
             {
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));

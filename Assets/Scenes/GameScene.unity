@@ -2504,6 +2504,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Map1_TreasureHunt
       objectReference: {fileID: 0}
+    - target: {fileID: 8453479957801251932, guid: 860125ad465029249b79f86bc3c07124, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

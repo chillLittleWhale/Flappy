@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace AjaxNguyen.Core.Panels
 {
-    public class SkinSelectionPanel : MonoBehaviour
+    public class SkinSelectionPanel : Panel
     {
         //ref
         [SerializeField] Transform content; // Content của ScrollView
@@ -26,19 +26,27 @@ namespace AjaxNguyen.Core.Panels
         {
             SkinManager.Instance.OnSkinDataChanged += Reload;
 
-            data = SkinManager.Instance.data; // binding data
-            PopulateItems();
-            UpdateUI_SkinCount();
+            data = SkinManager.Instance.data; // data binding 
 
-            SnapToChild(data.skinList.FindIndex(skin => skin.id == data.selectedSkinID), data.skinList.Count);
+            Reload(this, data);  
         }
 
-        void OnEnable()
+        protected override void OnShow()
         {
             SnapToChild(data.skinList.FindIndex(skin => skin.id == data.selectedSkinID), data.skinList.Count);
         }
 
-        void Reload(object sender, SkinData e)
+        void OnDisable()
+        {
+            SkinManager.Instance.OnSkinDataChanged -= Reload;
+        }
+
+        public void FirstReload()  // quá trình đăng nhập làm cho data được set và trong các Manager chậm hơn, hàm Start của các UIPanel chưa có dữ liệu chuẩn để hiển thị, nên phải Update lần đầu bằng event riêng
+        {
+            Reload(this, data);
+        }
+
+        public void Reload(object sender, SkinData e)
         {
             PopulateItems();
             UpdateUI_SkinCount();
@@ -72,10 +80,10 @@ namespace AjaxNguyen.Core.Panels
         public void OnButtonClick_Select()
         {
             var rawIndex = Mathf.RoundToInt((GetCurrentCenterPos() - (h_LayoutGroup.spacing + h_LayoutGroup.padding.left)) / (prefabItem.rect.width + h_LayoutGroup.spacing));
-            int finalIndex = Mathf.Clamp(rawIndex, 0, data.skinList.Count -1);
+            int finalIndex = Mathf.Clamp(rawIndex, 0, data.skinList.Count - 1);
             var newSelectedId = data.skinList[finalIndex].id;
 
-            if ( newSelectedId == data.selectedSkinID ) return;
+            if (newSelectedId == data.selectedSkinID) return;
 
             data.selectedSkinID = newSelectedId;
             SkinManager.Instance.ReSelectSkin(newSelectedId);
