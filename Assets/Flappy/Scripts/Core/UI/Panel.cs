@@ -10,9 +10,10 @@ namespace AjaxNguyen.Core.UI
         Loading,  //0
         MainMenu, Setting, PlayerInfor,  // 1 2 3
         SkinSelect, MapSelect, Gacha, Shop,  // 4 5 6 7
-        Ranking, Reward, Inbox, Quest, DailyLogin, // 8 9 10 11
-        Authen, // 12
-        ErrorPopup //13
+        Ranking, Reward, Inbox, Quest, DailyLogin, // 8 9 10 11 12
+        Authen, // 13
+        ErrorPopup, //14
+        ChangeNamePopUp // 15
     }
 
     public class Panel : MonoBehaviour

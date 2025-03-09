@@ -45,5 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnparentOnAwake: 1
-  onLoginOnline: {fileID: 11400000, guid: 590ae50f755f0ab488b5a3b00d14ff23, type: 2}
-  onSignout: {fileID: 11400000, guid: b2292bf1e7e492b4f97bc61f2dcd3846, type: 2}
+  onLogin: {fileID: 11400000, guid: 590ae50f755f0ab488b5a3b00d14ff23, type: 2}
+  onSignoutAttempt: {fileID: 11400000, guid: b2292bf1e7e492b4f97bc61f2dcd3846, type: 2}

@@ -49,12 +49,12 @@ MonoBehaviour:
     mapList:
     - id: 0
       mapName: Classic map
-      mapIcon: {fileID: 21300000, guid: 595188d8672964c08b60efc5f170e57e, type: 3}
+      mapIcon: {fileID: 21300000, guid: 0e8d351618ca77444add4a2c4f73892b, type: 3}
       unlockCost: 0
       isUnlocked: 1
     - id: 1
       mapName: Treasure Hunt
-      mapIcon: {fileID: 21300000, guid: f2a44e9821c354308b2146b6ebb7694c, type: 3}
+      mapIcon: {fileID: 21300000, guid: 70c60717dc2229945807abe015fb7561, type: 3}
       unlockCost: 0
       isUnlocked: 0
     selectedMapID: 0

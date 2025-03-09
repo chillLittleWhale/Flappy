@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using AjaxNguyen.Utility;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 namespace Flappy.Core.Manager
 {
@@ -17,10 +18,6 @@ namespace Flappy.Core.Manager
         //      SaveLoadManager.Instance.TrySaveSkinData(tempDataJson); // DO NOT DELETE: đoạn này để đẩy dữ liệu thủ công vào json.
         // }
 
-        // private void UpdateSkinData(object sender, SkinData e)
-        // {
-        //     data = e;
-        // }
 
         public void UnlockSkin(string skinId)
         {
@@ -38,7 +35,7 @@ namespace Flappy.Core.Manager
 
         public void SetData(SkinDataJson newData)
         {
-            tempDataJson = newData;
+            // tempDataJson = newData;
 
             data.selectedSkinID = newData.selectedSkinID;
 
@@ -47,16 +44,6 @@ namespace Flappy.Core.Manager
                 skin.isUnlocked = newData.skinList.Find(s => s.id == skin.id)?.isUnlocked ?? false;
             }
         }
-
-        // private void TrySaveData(SkinData data)
-        // {
-        //     if (SaveLoadManager.Instance.TrySaveSkinData(data))
-        //     {
-        //         this.data = data;
-        //         OnSkinDataChanged?.Invoke(this, data);
-        //     }
-        //     else Debug.LogWarning("Save resource data fail");
-        // }
 
         private void TrySaveData(SkinData data)
         {
@@ -85,6 +72,11 @@ namespace Flappy.Core.Manager
             }
 
             return jsonData;
+        }
+
+        public SpriteLibraryAsset GetCurrentSpriteLibraryAsset()
+        {
+            return data.skinList.Find(skin => skin.id == data.selectedSkinID).libraryAsset;
         }
     }
 

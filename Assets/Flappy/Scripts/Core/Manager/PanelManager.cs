@@ -116,7 +116,7 @@ namespace Flappy.Core.Manager
             }
         }
 
-        public void ShowErrorPopup(ErrorPopup.Action action = ErrorPopup.Action.None, string message = "lmao")
+        public void ShowErrorPopup(string message = "Something went wrong", ErrorPopup.Action action = ErrorPopup.Action.None)
         {
             ErrorPopup errorPopup = (ErrorPopup)GetPanel(PanelType.ErrorPopup);
             errorPopup.Open(action, message);

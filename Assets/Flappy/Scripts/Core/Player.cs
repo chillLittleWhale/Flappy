@@ -1,6 +1,7 @@
 using System;
 using Flappy.Core.Manager;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 namespace Flappy.Core
 {
@@ -9,7 +10,7 @@ namespace Flappy.Core
         #region Variables
         public static Player Instance;
         private Rigidbody2D rb;
-        // private SpriteRenderer sr;
+        private SpriteLibrary spriteLibrary;
         private GameState levelState;
 
         [SerializeField] float minFlapForce = 75f;
@@ -27,7 +28,7 @@ namespace Flappy.Core
         void Awake()
         {
             Instance = this;
-            // sr = GetComponent<SpriteRenderer>();
+            spriteLibrary = GetComponent<SpriteLibrary>();
             rb = GetComponent<Rigidbody2D>();
 
             rb.bodyType = RigidbodyType2D.Static;
@@ -35,8 +36,8 @@ namespace Flappy.Core
 
         void Start()
         {
-            // SkinManager.Instance.OnSkinDataChanged += null; //todo
             Level.Instance.OnStateChange += Player_OnStateChange;
+            spriteLibrary.spriteLibraryAsset = SkinManager.Instance.GetCurrentSpriteLibraryAsset();
         }
 
         void Update()
@@ -52,7 +53,7 @@ namespace Flappy.Core
                     break;
                 case GameState.Playing:
                     HandleFlap();
-                    transform.eulerAngles = new Vector3(0f, 0f, rb.velocity.y * 0.1f);   // phải để dưới HandleFlap
+                    transform.eulerAngles = new Vector3(0f, 0f, rb.linearVelocity.y * 0.1f);   // phải để dưới HandleFlap
                     break;
                 case GameState.GameOver:
                     break;
@@ -72,6 +73,7 @@ namespace Flappy.Core
         private void OnTriggerEnter2D(Collider2D other)
         {
             OnPlayerScore?.Invoke(Instance, EventArgs.Empty);
+            ResourceManager.Instance.AddResource(ResourceType.Gold, 1);  //TODO
         }
 
         #endregion
@@ -88,8 +90,6 @@ namespace Flappy.Core
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) // chuột trái
             {
                 MinFlap();
-
-                ResourceManager.Instance.AddResource(ResourceType.Stamina, 1);  //TODO
             }
             else if (Input.GetKeyDown(KeyCode.M) || Input.GetMouseButtonDown(1)) // chuột phải
             {
@@ -99,12 +99,12 @@ namespace Flappy.Core
 
         private void MinFlap()
         {
-            rb.velocity = Vector2.up * minFlapForce;
+            rb.linearVelocity = Vector2.up * minFlapForce;
         }
 
         private void MaxFlap()
         {
-            rb.velocity = Vector2.up * maxFlapForce;
+            rb.linearVelocity = Vector2.up * maxFlapForce;
         }
 
         #endregion

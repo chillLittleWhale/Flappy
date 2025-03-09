@@ -44,7 +44,7 @@ namespace Flappy.Core.Panels
 
         public void FirstReload()  // quá trình đăng nhập làm cho data được set và trong các Manager chậm hơn, hàm Start của các UIPanel chưa có dữ liệu chuẩn để hiển thị, nên phải Update lần đầu bằng event riêng
         {
-            Reload(this, data);
+            Reload(this, data); //TODO: không hiểu sao đoạn code này lại thừa?
         }
 
         public void Reload(object sender, SkinData e)
@@ -67,7 +67,7 @@ namespace Flappy.Core.Panels
                 GameObject item = Instantiate(skinItemPrefab, content);
                 SkinItemUI skinItemUI = item.GetComponent<SkinItemUI>();
 
-                skinItemUI.Setup(skin);
+                skinItemUI.Initialize(skin);
             }
         }
 

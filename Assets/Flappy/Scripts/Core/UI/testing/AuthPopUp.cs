@@ -68,7 +68,7 @@ namespace Flappy
                 }
                 else
                 {
-                    PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.None, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+                    PanelManager.Instance.ShowErrorPopup("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
                 }
             }
 

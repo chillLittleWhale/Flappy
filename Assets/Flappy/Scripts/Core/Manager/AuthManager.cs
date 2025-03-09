@@ -7,13 +7,18 @@ using System;
 using AjaxNguyen.Event;
 using AjaxNguyen.Core.UI;
 using AjaxNguyen.Utility.Service;
+using AjaxNguyen.Utility.Event;
+using System.Collections.Generic;
+using Unity.Services.CloudSave;
 
 namespace Flappy.Core.Manager
 {
     public class AuthManager : PersistentSingleton<AuthManager>
     {
+        private const string LAST_LOGIN_KEY = "LastLoginTime";
         [SerializeField] BoolEventChanel onLogin; //true = online, false = offline
-        [SerializeField] EmptyEventChanel onSignout;
+        [SerializeField] EmptyEventChanel onSignoutAttempt; // 
+
 
         private bool eventInitiated = false;
         private bool isSigningIn = false;
@@ -47,12 +52,13 @@ namespace Flappy.Core.Manager
             {
                 Debug.Log("No network connection. Starting game in offline mode with saved playerId: " + savedAccountId + ".");
                 onLogin.Raise(false); // Saveload sẽ nhận event này và quyết định cách tải dữ liệu
+                // EventSystem.Instance.RaiseEventAsync("SignInEvent", false);
             }
             else
             {
                 // Người dùng chưa đăng nhập trước đó
                 Debug.LogWarning("No internet connection and no saved account. Cannot start game.");
-                PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.StartSevice, "No account loged in and no internet connection, try latter ");
+                PanelManager.Instance.ShowErrorPopup("No account loged in and no internet connection, try latter", ErrorPopup.Action.StartSevice);
             }
         }
 
@@ -86,7 +92,7 @@ namespace Flappy.Core.Manager
             }
             catch (Exception e)
             {
-                PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.StartSevice, "Failed to conect to network ");
+                PanelManager.Instance.ShowErrorPopup("Failed to conect to network ", ErrorPopup.Action.StartSevice);
                 Debug.Log(e.Message);
             }
 
@@ -98,10 +104,15 @@ namespace Flappy.Core.Manager
             {
                 PanelManager.Instance.OpenPanel(PanelType.MainMenu);
                 onLogin.Raise(false);
+                // await EventSystem.Instance.RaiseEventAsync("SignInEvent", false);
             }
             else if (AuthenticationService.Instance.SessionTokenExists)
             {
-                if (await SignInAnonymousAsync()) onLogin.Raise(false);
+                if (await SignInAnonymousAsync())
+                {
+                    onLogin.Raise(false);
+                    // await EventSystem.Instance.RaiseEventAsync("SignInEvent", false);
+                }
                 else
                 {
                     PanelManager.Instance.OpenPanel(PanelType.Authen);
@@ -126,19 +137,19 @@ namespace Flappy.Core.Manager
             }
             catch (AuthenticationException e)
             {
-                PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.None, "SignInAnonymousAsync: Failed to sign in");
+                PanelManager.Instance.ShowErrorPopup("SignInAnonymousAsync: Failed to sign in");
                 Debug.Log(e.Message);
                 return false;
             }
             catch (RequestFailedException e)
             {
-                PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.None, "SignInAnonymousAsync: Failed to conect to network ");
+                PanelManager.Instance.ShowErrorPopup("SignInAnonymousAsync: Failed to conect to network ");
                 Debug.Log(e.Message);
                 return false;
             }
             catch (Exception e)
             {
-                PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.None, "SignInAnonymousAsync: unexpected error occurred ");
+                PanelManager.Instance.ShowErrorPopup("SignInAnonymousAsync: unexpected error occurred ");
                 Debug.LogError($"An unexpected error occurred: {e.Message}");
                 return false;
             }
@@ -162,6 +173,7 @@ namespace Flappy.Core.Manager
 
                 PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
                 onLogin.Raise(true);
+                // await EventSystem.Instance.RaiseEventAsync("SignInEvent", true);
 
                 PanelManager.Instance.OpenPanel(PanelType.MainMenu);
             }
@@ -194,6 +206,8 @@ namespace Flappy.Core.Manager
                 }
 
                 PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
+                await EventSystem.Instance.RaiseEventAsync("SignUpEvent");
+                onLogin.Raise(false);
 
                 PanelManager.Instance.OpenPanel(PanelType.MainMenu);
             }
@@ -208,18 +222,33 @@ namespace Flappy.Core.Manager
             finally { isSigningUp = false; }
         }
 
+        // public async Task SignOut()
+        // {
+        //     Debug.Log("AuthManager: SignOut");
+        //     PlayerPrefs.DeleteKey("CurrentAccountID");
+        //     PlayerPrefs.Save();
+
+        //     onSignoutAttempt.Raise(new Empty());
+        //     await Task.Delay(2000);  // đợi cho các listenner thực hiện hết //TODO: xem xét phần này
+
+        //     AuthenticationService.Instance.SignOut(true);  // để true để nó xóa hết credential
+
+        //     PanelManager.Instance.CloseAllPanels();
+        //     PanelManager.Instance.OpenPanel(PanelType.Authen);
+        // }
+
         public async Task SignOut()
         {
+            Debug.Log("AuthManager: SignOut");
             PlayerPrefs.DeleteKey("CurrentAccountID");
             PlayerPrefs.Save();
 
-            onSignout.Raise(new Empty());
-            await Task.Delay(1000);  // đợi cho các listenner thực hiện hết
-
-            AuthenticationService.Instance.SignOut(true);  // để true để nó xóa hết credential
-
-            PanelManager.Instance.CloseAllPanels();
-            PanelManager.Instance.OpenPanel(PanelType.Authen);
+            await EventSystem.Instance.RaiseEventAsync("SignOutEvent", () =>
+            {
+                AuthenticationService.Instance.SignOut(true);  // để true để nó xóa hết credential
+                PanelManager.Instance.CloseAllPanels();
+                PanelManager.Instance.OpenPanel(PanelType.Authen);
+            });
         }
 
         private void SetupEvents()
@@ -233,6 +262,11 @@ namespace Flappy.Core.Manager
                 Debug.Log($"Access Token: {AuthenticationService.Instance.AccessToken}");
 
                 await SignInConfirmedAsync();
+
+                var tmp = await ServerTimeManager.Instance.GetServerTimeAsync();
+                await Task.Delay(5000);  // đợi cho DailyReawardManager thực hiện hết
+                SaveLastLoginTimeToCloudAsync(tmp);
+                
             };
 
             AuthenticationService.Instance.SignedOut += () =>
@@ -253,6 +287,8 @@ namespace Flappy.Core.Manager
             Debug.Log("SignInConfirmedAsync");
             try
             {
+                await Task.Delay(1000); // Chờ 0.5 giây để dữ liệu đồng bộ từ server, nếu không tên sẽ null
+
                 if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName))
                 {
                     await AuthenticationService.Instance.UpdatePlayerNameAsync("New_Player"); // hàm này yêu cầu input không được có space
@@ -261,16 +297,50 @@ namespace Flappy.Core.Manager
             }
             catch (AuthenticationException ex)
             {
-                PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.SignIn, "SignInConfirmedAsync:Failed to sign in");
+                PanelManager.Instance.ShowErrorPopup("SignInConfirmedAsync:Failed to sign in", ErrorPopup.Action.SignIn);
                 Debug.LogWarning(ex.Message);
             }
             catch (RequestFailedException)
             {
-                PanelManager.Instance.ShowErrorPopup(ErrorPopup.Action.SignIn, "SignInConfirmedAsync: Failed to conect to network ");
+                PanelManager.Instance.ShowErrorPopup("SignInConfirmedAsync: Failed to conect to network ", ErrorPopup.Action.SignIn);
             }
         }
 
-        // Hàm kiểm tra kết nối mạng
+
+        public async Task<DateTime> GetLastLoginTimeFromCloudAsync()
+        {
+            try
+            {
+                var data = await CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string> { LAST_LOGIN_KEY });
+                if (data.TryGetValue(LAST_LOGIN_KEY, out var timeItem))
+                {
+                    return timeItem.Value.GetAs<DateTime>();
+                }
+                return DateTime.MinValue; // Không tìm thấy, trả về giá trị mặc định
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to load last login time from Cloud: {e.Message}");
+                return DateTime.MinValue;
+            }
+        }
+
+        public async void SaveLastLoginTimeToCloudAsync(DateTime loginTime)
+        {
+            try
+            {
+                var data = new Dictionary<string, object>
+            {
+                { LAST_LOGIN_KEY, loginTime}//.ToFileTimeUtc() }
+            };
+                await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to save last login time to Cloud: {e.Message}");
+            }
+        }
+
         bool IsNetworkAvailable()
         {
             return Application.internetReachability != NetworkReachability.NotReachable;

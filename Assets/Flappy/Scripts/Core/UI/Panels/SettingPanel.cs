@@ -2,6 +2,9 @@ using Flappy.Core.Manager;
 using AjaxNguyen.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading.Tasks;
+using AjaxNguyen;
+using AjaxNguyen.Utility.Event;
 
 namespace Flappy.Core.Panels
 {
@@ -12,14 +15,28 @@ namespace Flappy.Core.Panels
         [SerializeField] Slider sfxSlider;
 
 
-        public override void Initialize()
+        public override void Awake()
         {
-            base.Initialize();
+            base.Awake();
 
             logoutButton.onClick.AddListener(SignOut);
             musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
             sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+
+            // test async event bus
+            // AsyncEventBus.Subscribe<AsyncEBusTest>(HandleSignOutAsync);
         }
+
+        // private async Task HandleSignOutAsync(AsyncEBusTest msg)  // test
+        // {
+        //     await Task.Delay(1000);
+        //     Debug.Log("Test async event bus log");
+        // }
+
+        // private async Task Lmao() // test
+        // {
+        //     await AsyncEventBus.Publish(new AsyncEBusTest());
+        // }
 
         void Start()
         {
@@ -30,6 +47,7 @@ namespace Flappy.Core.Panels
 
         private async void SignOut()
         {
+            Debug.LogWarning("SettingPanel: SignOut");
             await AuthManager.Instance.SignOut();
         }
 

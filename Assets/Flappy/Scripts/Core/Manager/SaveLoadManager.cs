@@ -9,18 +9,24 @@ using AjaxNguyen.Utility;
 using Newtonsoft.Json;
 using Unity.Services.CloudSave;
 using UnityEngine;
+using Unity.Services.Authentication;
+using AjaxNguyen.Utility.Event;
 
 namespace Flappy.Core.Manager
 {
     public class SaveLoadManager : PersistentSingleton<SaveLoadManager>
     {
-        private const string FILE_NAME_RESOURCE = "ResourceData";
-        private const string FILE_NAME_SKIN = "SkinData";
-        private const string FILE_NAME_MAP = "MapData";
+        public const string FILE_NAME_RESOURCE = "ResourceData";
+        public const string FILE_NAME_SKIN = "SkinData";
+        public const string FILE_NAME_MAP = "MapData";
+        public const string FILE_NAME_PLAYER_INFO = "PlayerInfoData";
+        public const string FILE_NAME_DAILY_REWARD = "DailyRewardData";
 
         public ResourceData resourceData;
         public SkinDataJson skinData;
         public MapDataJson mapData;
+        public PlayerInfoData playerInfoData;
+        public DailyRewardData dailyRewardData;
 
         JsonDataService jsonDataService;
 
@@ -33,8 +39,17 @@ namespace Flappy.Core.Manager
             resourceData = new();
             skinData = new();
             mapData = new();
+            playerInfoData = new();
+            dailyRewardData = new();
 
             jsonDataService = new();
+        }
+
+        void Start()
+        {
+            // Đăng ký các listener
+            EventSystem.Instance.Subscribe("SignOutEvent", HandleUserLogout);
+            EventSystem.Instance.Subscribe("SignUpEvent", TrySaveAllData_Cloud);
         }
 
         public void StartSetUpData(bool isUsingCloudData)
@@ -75,6 +90,8 @@ namespace Flappy.Core.Manager
             ResourceManager.Instance.SetData(resourceData);
             SkinManager.Instance.SetData(skinData);
             MapManager.Instance.SetData(mapData);
+            PlayerInfoManager.Instance.SetData(playerInfoData);
+            DailyRewardManager.Instance.SetData(dailyRewardData);
 
             onFinishSetUpData.Raise(new Empty());
         }
@@ -94,13 +111,15 @@ namespace Flappy.Core.Manager
             resourceData = jsonDataService.Load<ResourceData>(FILE_NAME_RESOURCE);
             skinData = jsonDataService.Load<SkinDataJson>(FILE_NAME_SKIN);
             mapData = jsonDataService.Load<MapDataJson>(FILE_NAME_MAP);
+            playerInfoData = jsonDataService.Load<PlayerInfoData>(FILE_NAME_PLAYER_INFO);
+            dailyRewardData = jsonDataService.Load<DailyRewardData>(FILE_NAME_DAILY_REWARD);
         }
 
         async Task LoadAllGameData_Cloud()
         {
             try
             {
-                var loadData = await CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string> { FILE_NAME_RESOURCE, FILE_NAME_SKIN, FILE_NAME_MAP });
+                var loadData = await CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string> { FILE_NAME_RESOURCE, FILE_NAME_SKIN, FILE_NAME_MAP, FILE_NAME_PLAYER_INFO, FILE_NAME_DAILY_REWARD });
 
                 if (loadData.TryGetValue("ResourceData", out var resourceItem))
                 {
@@ -127,6 +146,24 @@ namespace Flappy.Core.Manager
                 else
                 {
                     Debug.LogError($"Data with key '{FILE_NAME_MAP}' not found.");
+                }
+
+                if (loadData.TryGetValue("PlayerInfoData", out var playerInfoItem))
+                {
+                    playerInfoData = playerInfoItem.Value.GetAs<PlayerInfoData>();
+                }
+                else
+                {
+                    Debug.LogError($"Data with key '{FILE_NAME_PLAYER_INFO}' not found.");
+                }
+
+                if (loadData.TryGetValue("DailyRewardData", out var dailyRewardItem))
+                {
+                    dailyRewardData = dailyRewardItem.Value.GetAs<DailyRewardData>();
+                }
+                else
+                {
+                    Debug.LogError($"Data with key '{FILE_NAME_DAILY_REWARD}' not found.");
                 }
             }
             catch (Exception ex)
@@ -163,9 +200,25 @@ namespace Flappy.Core.Manager
                 // Ghi đè MapData.json 
                 if (defaultJson.ContainsKey("MapData"))
                 {
-                    var tempData = JsonConvert.DeserializeObject<SkinDataJson>(defaultJson["MapData"].ToString());
+                    var tempData = JsonConvert.DeserializeObject<MapDataJson>(defaultJson["MapData"].ToString());
                     jsonDataService.Save(tempData, FILE_NAME_MAP);
-                    Debug.Log("SkinData.json đã được reset!");
+                    Debug.Log("MapData.json đã được reset!");
+                }
+
+                // Ghi đè PlayerInfoData.json 
+                if (defaultJson.ContainsKey("PlayerInfoData"))
+                {
+                    var tempData = JsonConvert.DeserializeObject<PlayerInfoData>(defaultJson["PlayerInfoData"].ToString());
+                    jsonDataService.Save(tempData, FILE_NAME_PLAYER_INFO);
+                    Debug.Log("PlayerInfoData.json đã được reset!");
+                }
+
+                // Ghi đè DailyRewardData.json 
+                if (defaultJson.ContainsKey("DailyRewardData"))
+                {
+                    var tempData = JsonConvert.DeserializeObject<DailyRewardData>(defaultJson["DailyRewardData"].ToString());
+                    jsonDataService.Save(tempData, FILE_NAME_DAILY_REWARD);
+                    Debug.Log("DailyRewardData.json đã được reset!");
                 }
 
             }
@@ -180,7 +233,9 @@ namespace Flappy.Core.Manager
             return (
                 TrySaveData_Local(resourceData, FILE_NAME_RESOURCE) &&
                 TrySaveData_Local(skinData, FILE_NAME_SKIN) &&
-                TrySaveData_Local(mapData, FILE_NAME_MAP)
+                TrySaveData_Local(mapData, FILE_NAME_MAP) &&
+                TrySaveData_Local(playerInfoData, FILE_NAME_PLAYER_INFO) &&
+                TrySaveData_Local(dailyRewardData, FILE_NAME_DAILY_REWARD)
             );
         }
 
@@ -189,11 +244,13 @@ namespace Flappy.Core.Manager
             return (
                 await TrysaveData_Cloud<ResourceData>(FILE_NAME_RESOURCE) &&
                 await TrysaveData_Cloud<SkinDataJson>(FILE_NAME_SKIN) &&
-                await TrysaveData_Cloud<MapDataJson>(FILE_NAME_MAP)
+                await TrysaveData_Cloud<MapDataJson>(FILE_NAME_MAP) &&
+                await TrysaveData_Cloud<PlayerInfoData>(FILE_NAME_PLAYER_INFO) &&
+                await TrysaveData_Cloud<DailyRewardData>(FILE_NAME_DAILY_REWARD)
             );
         }
 
-        async Task<bool> TrysaveData_Cloud<T>(string fileName)
+        private async Task<bool> TrysaveData_Cloud<T>(string fileName)
         {
             T iData = jsonDataService.Load<T>(fileName);
 
@@ -215,6 +272,30 @@ namespace Flappy.Core.Manager
             }
         }
 
+        public async Task<bool>  TrysaveData_Both<T>(T data,string fileName)
+        {
+            var saveData = new Dictionary<string, object>
+            {
+                { fileName, data }
+            };
+
+            try
+            {
+                await CloudSaveService.Instance.Data.Player.SaveAsync(saveData);
+                Debug.Log($"CloudSave: save {fileName} SUCCESS");
+                if (TrySaveData_Local(data, fileName))
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"CloudSave: save {fileName} FAIL: {e.Message}");
+                return false;
+            }
+        }
+
         public bool TrySaveData_Local<T>(T data, string fileName)
         {
             if (jsonDataService.Save(data, fileName)) return true; // save success
@@ -223,7 +304,7 @@ namespace Flappy.Core.Manager
             return false;
         }
 
-        public async void HandleUserLogout()
+        public async Task HandleUserLogout() //  void
         {
             bool saveSuccess = await TrySaveAllData_Cloud();
 

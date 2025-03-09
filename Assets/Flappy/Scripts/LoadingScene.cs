@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using AjaxNguyen.Event;
+using AjaxNguyen.Utility.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,6 +17,11 @@ namespace AjaxNguyen
 
         private float progress = 0f;
 
+
+        // void Start()
+        // {
+        //     EventSystem.Instance.Subscribe<bool>("SignInEvent", HandleLoading2);
+        // }
 
         public void Load()
         {
@@ -39,6 +45,28 @@ namespace AjaxNguyen
                 yield return null;
             }
         }
+
+
+        // public async Task HandleLoading2()
+        // {
+        //     Debug.Log("HandleLoading2");
+        //     loadingSlider.value = 0f;
+        //     loadingText.text = "0%";
+        //     loadingBar.SetActive(true);
+
+        //     var operation = SceneManager.LoadSceneAsync("MenuScene");
+
+        //     do
+        //     {
+        //         progress = Mathf.Clamp01(operation.progress / .9f); // phải là 0.9 chứ không phải 1, vì Unity dùng 90% de load scene, 10% để mở scene khi operation.allowSceneActivation = true.
+        //         loadingSlider.value = progress;
+        //         loadingText.text = progress * 100f + "%";
+
+        //     }
+        //     while (operation.progress < 0.9f);
+
+        //     await Task.Delay(1000);
+        // }
 
     }
 }

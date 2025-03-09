@@ -11,7 +11,7 @@ namespace Flappy.Core.UI
 
         private Skin skinData;
 
-        public void Setup(Skin data)
+        public void Initialize(Skin data)
         {
             skinData = data;
 

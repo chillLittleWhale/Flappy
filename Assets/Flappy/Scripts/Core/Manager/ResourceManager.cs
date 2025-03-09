@@ -83,7 +83,6 @@ namespace Flappy.Core.Manager
 
         private void TrySaveData(ResourceData data)
         {
-            // if (SaveLoadManager.Instance.TrySaveResourceData(data))
             if (SaveLoadManager.Instance.TrySaveData_Local<ResourceData>(data,"ResourceData")) 
             {
                 this.data = data;

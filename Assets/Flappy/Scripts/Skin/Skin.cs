@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 namespace Flappy.Core
 {
@@ -9,6 +10,7 @@ namespace Flappy.Core
         public string id;
         public string skinName;
         public Sprite skinIcon;
+        public SpriteLibraryAsset libraryAsset;
         public int unlockCost;
         public bool isUnlocked;
 
