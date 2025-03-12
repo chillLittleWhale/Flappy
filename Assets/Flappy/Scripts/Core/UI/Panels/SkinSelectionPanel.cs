@@ -29,11 +29,12 @@ namespace Flappy.Core.Panels
 
             data = SkinManager.Instance.data; // data binding 
 
-            Reload(this, data);  
+            Reload(this, data);
         }
 
         protected override void OnShow()
         {
+            Reload(this, data);
             SnapToChild(data.skinList.FindIndex(skin => skin.id == data.selectedSkinID), data.skinList.Count);
         }
 
@@ -44,7 +45,7 @@ namespace Flappy.Core.Panels
 
         public void FirstReload()  // quá trình đăng nhập làm cho data được set và trong các Manager chậm hơn, hàm Start của các UIPanel chưa có dữ liệu chuẩn để hiển thị, nên phải Update lần đầu bằng event riêng
         {
-            Reload(this, data); //TODO: không hiểu sao đoạn code này lại thừa?
+            Reload(this, data); //TODO: không hiểu sao đoạn code này có vẻ bị thừa?
         }
 
         public void Reload(object sender, SkinData e)
@@ -89,8 +90,10 @@ namespace Flappy.Core.Panels
 
             if (newSelectedId == data.selectedSkinID) return;
 
-            data.selectedSkinID = newSelectedId;
-            SkinManager.Instance.ReSelectSkin(newSelectedId);
+            if (SkinManager.Instance.TrySelectSkin(newSelectedId))
+            {
+                data.selectedSkinID = newSelectedId;
+            }
 
         }
 

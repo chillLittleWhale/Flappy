@@ -11,7 +11,7 @@ namespace Flappy.Core.Manager
         public event EventHandler<SkinData> OnSkinDataChanged;
         public SkinData data;
         private SkinData tempData;
-        [SerializeField]private SkinDataJson tempDataJson;
+        [SerializeField] private SkinDataJson tempDataJson;
 
         // void Start()
         // {
@@ -26,11 +26,16 @@ namespace Flappy.Core.Manager
             TrySaveData(tempData);
         }
 
-        public void ReSelectSkin(string skinId)
+        public bool TrySelectSkin(string skinId)
         {
-            tempData = new SkinData(data);
-            tempData.selectedSkinID = skinId;
-            TrySaveData(tempData);
+            if (data.skinList.Find(skin => skin.id == skinId).isUnlocked)
+            {
+                tempData = new SkinData(data);
+                tempData.selectedSkinID = skinId;
+                TrySaveData(tempData);
+                return true;
+            }
+            return false;
         }
 
         public void SetData(SkinDataJson newData)
@@ -50,7 +55,7 @@ namespace Flappy.Core.Manager
             tempDataJson = ToSkinDataJson(data);
 
             // if (SaveLoadManager.Instance.TrySaveSkinData(tempDataJson))
-            if (SaveLoadManager.Instance.TrySaveData_Local<SkinDataJson>(tempDataJson,"SkinData")) 
+            if (SaveLoadManager.Instance.TrySaveData_Local(tempDataJson, "SkinData"))
             {
                 this.data = data;
                 OnSkinDataChanged?.Invoke(this, data);

@@ -36,26 +36,27 @@ namespace Flappy.Core.Manager
             TrySaveData(tempData);
         }
 
-        public void SpendResource(RewardType resourceType, int amount)
+        public bool TrySpendResource(RewardType resourceType, int amount)
         {
             tempData = new ResourceData(data);
 
             switch (resourceType)
             {
                 case RewardType.Gold:
-                    if (tempData.gold < amount) return;
+                    if (tempData.gold < amount) return false;
                     tempData.gold -= amount;
                     break;
                 case RewardType.Diamond:
-                    if (tempData.diamond < amount) return;
+                    if (tempData.diamond < amount) return false;
                     tempData.diamond -= amount;
                     break;
                 default:
                     Debug.LogWarning("SpendResource: Unknown resource type: " + resourceType);
-                    break;
+                    return false;
             }
 
             TrySaveData(tempData);
+            return true;
         }
 
         public int GetResourceAmount(RewardType resourceType)

@@ -12,7 +12,7 @@ namespace Flappy.Core.Manager
     {
         public event EventHandler<DailyRewardData> OnDailyRewardDataChanged;
         public DailyRewardSO SOData; // Tham chiếu đến dữ liệu phần thưởng
-        [SerializeField] private DateTime startDate = new(2025, 3, 3); // Ngày bắt đầu chu kỳ (CN tuần trước)
+        [SerializeField] private DateTime startDate = new(2025, 3, 3); // Ngày bắt đầu chu kỳ
         private int currentDay = 0;          // Ngày hiện tại (0-6)
 
         [SerializeField] private DailyRewardData data;
