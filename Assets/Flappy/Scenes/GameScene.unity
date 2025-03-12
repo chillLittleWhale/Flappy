@@ -1068,6 +1068,7 @@ MonoBehaviour:
   gapSize: 30
   pipe_y_speed: 2
   pipe_x_speed: 10
+  OnRecordBreak: {fileID: 11400000, guid: 904a779fe99700c49bfc34af29c9fe0d, type: 2}
 --- !u!1 &825639059
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,7 +1121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1150,19 +1151,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 825639062}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1241032941}
-        m_TargetAssemblyTypeName: Window_GameOver, Assembly-CSharp
-        m_MethodName: RetryBtnOnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &825639062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1611,7 +1600,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!212 &1165842309
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1905,6 +1894,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 203255870}
   highScoreText: {fileID: 176712695}
+  retryButton: {fileID: 825639061}
+  menuButton: {fileID: 1855783381}
   panel: {fileID: 1401321837}
 --- !u!1 &1401321837
 GameObject:
@@ -2368,7 +2359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -2398,19 +2389,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1855783382}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1241032941}
-        m_TargetAssemblyTypeName: Window_GameOver, Assembly-CSharp
-        m_MethodName: MenuBtnOnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1855783382
 MonoBehaviour:
   m_ObjectHideFlags: 0

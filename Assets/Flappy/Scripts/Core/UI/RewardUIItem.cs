@@ -36,7 +36,7 @@ namespace Flappy.Core.UI
         {
             if (reward != null)
             {
-                valueText.text = $"{reward.rewardType} x{reward.amount}";
+                valueText.text = $"{reward.colectableSO.type} x{reward.colectableSO.amount}";
                 // Cập nhật icon dựa trên rewardType nếu cần (có thể thêm logic sau)
                 // claimButton.interactable = !reward.isClaimed; // Vô hiệu hóa nút nếu đã nhận
                 focus.SetActive(false);

@@ -6,7 +6,7 @@ namespace Flappy.Core.Manager
 {
     public class ResourceManager : PersistentSingleton<ResourceManager>
     {
-        public event EventHandler<ResourceData> OnResourceDataChanged; //--
+        public event EventHandler<ResourceData> OnResourceDataChanged; 
         public ResourceData data;
 
         private ResourceData tempData;  // when save load error occurs, this will make sure the real data is not be effected
@@ -16,20 +16,17 @@ namespace Flappy.Core.Manager
         //     // SaveLoadManager.Instance.OnResourceDataChanged += UpdateResourceData; //--
         // }
 
-        public void AddResource(ResourceType resourceType, int amount)
+        public void AddResource(RewardType resourceType, int amount)
         {
             tempData = new ResourceData(data);
 
             switch (resourceType)
             {
-                case ResourceType.Gold:
+                case RewardType.Gold:
                     tempData.gold += amount;
                     break;
-                case ResourceType.Diamond:
+                case RewardType.Diamond:
                     tempData.diamond += amount;
-                    break;
-                case ResourceType.Stamina:
-                    tempData.stamina += amount;
                     break;
                 default:
                     Debug.LogWarning("AddResource: Unknown resource type: " + resourceType);
@@ -39,23 +36,19 @@ namespace Flappy.Core.Manager
             TrySaveData(tempData);
         }
 
-        public void SpendResource(ResourceType resourceType, int amount)
+        public void SpendResource(RewardType resourceType, int amount)
         {
             tempData = new ResourceData(data);
 
             switch (resourceType)
             {
-                case ResourceType.Gold:
+                case RewardType.Gold:
                     if (tempData.gold < amount) return;
                     tempData.gold -= amount;
                     break;
-                case ResourceType.Diamond:
+                case RewardType.Diamond:
                     if (tempData.diamond < amount) return;
                     tempData.diamond -= amount;
-                    break;
-                case ResourceType.Stamina:
-                    if (tempData.stamina < amount) return;
-                    tempData.stamina -= amount;
                     break;
                 default:
                     Debug.LogWarning("SpendResource: Unknown resource type: " + resourceType);
@@ -65,16 +58,14 @@ namespace Flappy.Core.Manager
             TrySaveData(tempData);
         }
 
-        public int GetResourceAmount(ResourceType resourceType)
+        public int GetResourceAmount(RewardType resourceType)
         {
             switch (resourceType)
             {
-                case ResourceType.Gold:
+                case RewardType.Gold:
                     return data.gold;
-                case ResourceType.Diamond:
+                case RewardType.Diamond:
                     return data.diamond;
-                case ResourceType.Stamina:
-                    return data.stamina;
                 default:
                     Debug.LogWarning("GetResourceAmount: Unknown resource type: " + resourceType);
                     return 0;
@@ -102,13 +93,13 @@ namespace Flappy.Core.Manager
     {
         public int gold;
         public int diamond;
-        public int stamina;
+        //public int stamina;
 
-        public ResourceData(int gold = 0, int diamond = 0, int stamina = 0)
+        public ResourceData(int gold = 0, int diamond = 0)//, int stamina = 0)
         {
             this.gold = gold;
             this.diamond = diamond;
-            this.stamina = stamina;
+            //this.stamina = stamina;
         }
 
         // parameterless constructor for generic types
@@ -116,7 +107,7 @@ namespace Flappy.Core.Manager
         {
             gold = 0;
             diamond = 0;
-            stamina = 0;
+            //stamina = 0;
         }
 
         // Copy constructor
@@ -124,13 +115,13 @@ namespace Flappy.Core.Manager
         {
             this.gold = other.gold;
             this.diamond = other.diamond;
-            this.stamina = other.stamina;
+            //this.stamina = other.stamina;
         }
     }
 
-    public enum ResourceType
-    {
-        Gold, Diamond, Stamina
-    }
+    // public enum RewardType
+    // {
+    //     Gold, Diamond
+    // }
 
 }

@@ -2,6 +2,7 @@ using AjaxNguyen;
 using AjaxNguyen.Core.UI;
 using Flappy.Core.Manager;
 using Flappy.Core.UI;
+using Flappy.Script.SO;
 
 namespace Flappy.Core.Panels
 {

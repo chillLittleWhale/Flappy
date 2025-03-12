@@ -4,6 +4,7 @@ using AjaxNguyen.Utility;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.CloudSave;
+using Flappy.Script.SO;
 
 namespace Flappy.Core.Manager
 {
@@ -11,7 +12,7 @@ namespace Flappy.Core.Manager
     {
         public event EventHandler<DailyRewardData> OnDailyRewardDataChanged;
         public DailyRewardSO SOData; // Tham chiếu đến dữ liệu phần thưởng
-        [SerializeField] private DateTime startDate = new(2025, 3, 2); // Ngày bắt đầu chu kỳ (CN tuần trước)
+        [SerializeField] private DateTime startDate = new(2025, 3, 3); // Ngày bắt đầu chu kỳ (CN tuần trước)
         private int currentDay = 0;          // Ngày hiện tại (0-6)
 
         [SerializeField] private DailyRewardData data;
@@ -24,27 +25,11 @@ namespace Flappy.Core.Manager
             base.Awake();
             data = new();
         }
-        void Start()
-        {
-            // TrySaveData(data); // DO NOT DELETE: đoạn này để đẩy dữ liệu thủ công vào json.
-            FirstLoad();
-        }
 
-        // public void SetData(DailyRewardData inputData)
+        // void Start()
         // {
-        //     foreach (var kvp in inputData.statusDic)
-        //     {
-        //         int dayIndex = kvp.Key;
-
-        //         if (dayIndex >= 0 && dayIndex < SOData.dailyRewards.Length)
-        //         {
-        //             SOData.dailyRewards[dayIndex].rewardStatus = kvp.Value;
-        //         }
-        //         else
-        //         {
-        //             Debug.LogWarning($"Day index {dayIndex} nằm ngoài phạm vi hợp lệ!");
-        //         }
-        //     }
+        //     // TrySaveData(data); // DO NOT DELETE: đoạn này để đẩy dữ liệu thủ công vào json.
+        //     FirstLoad();
         // }
 
         public void SetData(DailyRewardData inputData)
@@ -114,6 +99,7 @@ namespace Flappy.Core.Manager
                 {
                     data = new(tempData);
                     SOData.dailyRewards[day].isClaimed = true;
+                    SOData.dailyRewards[day].colectableSO.Collect();
                     OnDailyRewardDataChanged?.Invoke(this, data);
                 }
             }
@@ -147,7 +133,7 @@ namespace Flappy.Core.Manager
             return Application.internetReachability != NetworkReachability.NotReachable;
         }
 
-        private async void FirstLoad()
+        public async void FirstLoad()
         {
             if (!IsNetworkAvailable())
             {
@@ -208,19 +194,6 @@ namespace Flappy.Core.Manager
     [Serializable]
     public class DailyRewardData
     {
-        // public Dictionary<int, RewardStatus> statusDic = new(); // Trạng thái của từng phần thưởng (dayIndex -> state)
-
-        // public DailyRewardData()
-        // {
-        //     for (int i = 0; i< 7; i++) statusDic.Add(i, RewardStatus.NotClaimable);
-        // }
-
-        // //copy constructor
-        // public DailyRewardData(DailyRewardData other)
-        // {
-        //     statusDic = new Dictionary<int, RewardStatus>(other.statusDic);
-        // }
-
         public Dictionary<int, bool> statusDic = new(); // Trạng thái của từng phần thưởng (dayIndex -> isClaimed)
 
         public DailyRewardData()
@@ -234,4 +207,68 @@ namespace Flappy.Core.Manager
             statusDic = new Dictionary<int, bool>(other.statusDic);
         }
     }
+
+
+    public enum RewardType { Gold, Diamond, Stamina, LuckyEgg }
+
+    public abstract class CollectibleSO : ScriptableObject
+    {
+        public RewardType type;
+        public int amount;
+
+        public abstract void Collect();
+    }
+
+    // [CreateAssetMenu(fileName = "ResourceRewardSO", menuName = "NewSO/Rewards/ResourceReward")]
+    // public class ResourceRewardSO : CollectibleSO
+    // {
+    //     public override void Collect()
+    //     {
+    //         ResourceManager.Instance.AddResource(type, amount);
+    //         Debug.Log($"Collected Resource: {type} x{amount}");
+    //     }
+    // }
+
+    // [CreateAssetMenu(fileName = "StaminaRewardSO", menuName = "NewSO/Rewards/StaminaReward")]
+    // public class StaminaRewardSO : CollectibleSO
+    // {
+    //     public override void Collect()
+    //     {
+    //         StaminaManager.Instance.AddStamina(amount);
+    //         Debug.Log($"Collected Stamina: {amount}");
+    //     }
+    // }
+
+    [Serializable]
+    public class Reward
+    {
+        public CollectibleSO colectableSO;
+        public int dayInWeak = 0;
+        public bool isClaimed;        // Trạng thái đã nhận hay chưa
+        public bool isTodayReward;
+
+        public Reward(CollectibleSO colectableSO, bool isClaimed = false, bool isTodayReward = false)
+        {
+            this.colectableSO = colectableSO;
+            this.isClaimed = isClaimed;
+            this.isTodayReward = isTodayReward;
+        }
+    }
+
+    // [CreateAssetMenu(fileName = "DailyRewardSO", menuName = "NewSO/Rewards/_DailyRewardSO", order = 1)]
+    // [Serializable]
+    // public class DailyRewardSO : ScriptableObject
+    // {
+    //     public Reward[] dailyRewards = new Reward[7];
+
+    //     public void ReSetData()
+    //     {
+    //         foreach (var reward in dailyRewards)
+    //         {
+    //             reward.isTodayReward = false;
+    //             reward.isClaimed = false;
+    //         }
+    //     }
+    // }
+
 }

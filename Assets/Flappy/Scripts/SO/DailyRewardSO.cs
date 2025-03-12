@@ -1,14 +1,14 @@
-using Flappy.Core;
+using System;
+using Flappy.Core.Manager;
 using UnityEngine;
 
-namespace Flappy
+namespace Flappy.Script.SO
 {
-
-    [CreateAssetMenu(fileName = "DailyReward", menuName = "NewSO/DailyReward", order = 1)]
-    [System.Serializable]
+    [CreateAssetMenu(fileName = "DailyRewardSO", menuName = "NewSO/Rewards/_DailyRewardSO", order = 1)]
+    [Serializable]
     public class DailyRewardSO : ScriptableObject
     {
-        public Reward[] dailyRewards = new Reward[7]; // Mảng 7 phần thưởng cho 7 ngày
+        public Reward[] dailyRewards = new Reward[7];
 
         public void ReSetData()
         {
@@ -19,4 +19,5 @@ namespace Flappy
             }
         }
     }
+
 }

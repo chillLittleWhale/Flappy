@@ -14,6 +14,11 @@ namespace Flappy.Core.UI
             highestScoreText = transform.Find("HighestScore").GetComponent<TextMeshProUGUI>();
         }
 
+        void Start()
+        {
+            highestScoreText.text = "HighestScore: " + PlayerPrefs.GetInt("HighestScore", 0).ToString();
+        }
+
         private void OnEnable()
         {
             Level.Instance.OnScoreChanged += UpdateUI;

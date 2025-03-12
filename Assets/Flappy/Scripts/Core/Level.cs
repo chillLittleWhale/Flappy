@@ -2,6 +2,7 @@ using System;
 using Flappy.Core.Manager;
 using AjaxNguyen.Utility.ObjectPooling;
 using UnityEngine;
+using AjaxNguyen.Event;
 
 namespace Flappy.Core
 {
@@ -37,10 +38,11 @@ namespace Flappy.Core
         #region Events
         public event EventHandler<int> OnScoreChanged;
         public event EventHandler<GameState> OnStateChange;
+        [SerializeField] IntEventChanel OnRecordBreak;  
 
         private void Level_OnPlayerScore(object sender, System.EventArgs e)
         {
-            playerScore++;
+            playerScore += 1;
             OnScoreChanged?.Invoke(this, playerScore);
         }
 
@@ -49,6 +51,7 @@ namespace Flappy.Core
             // state = GameState.GameOver;
             // OnStateChange?.Invoke(this, state);
             ChangeState(GameState.GameOver);
+            TrySetHighestScore(playerScore);
         }
         #endregion
 
@@ -110,18 +113,6 @@ namespace Flappy.Core
         #region Other methods
         private void CreatePipes()
         {
-            // ySpawnPos = UnityEngine.Random.Range(-CAM_OTHOR_SIZE + gapSize * 0.5f + GROUND_HEIGHT + MIN_HEIGHT_TO_EDGE, CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE);
-            // canHorirontalMove = UnityEngine.Random.Range(0f, 100f) < Y_move_rate;
-
-            // var newPipe = PoolManager.Instance.GetFromPool(pipes.gameObject);
-            // newPipe.transform.position = startPoint.position;
-
-            // var pipesController = newPipe.GetComponent<PipesController>();
-            // pipesController.SetupPipe(gapSize, ySpawnPos, canHorirontalMove, pipe_y_speed,
-            //     -CAM_OTHOR_SIZE + gapSize * 0.5f + MIN_HEIGHT_TO_EDGE + GROUND_HEIGHT,
-            //     CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE);
-
-            // newPipe.GetComponent<HorizontalMove>().SetUp(pipe_x_speed);
             ySpawnPos = UnityEngine.Random.Range(-CAM_OTHOR_SIZE + gapSize * 0.5f + GROUND_HEIGHT + MIN_HEIGHT_TO_EDGE, CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE);
             canVerticalMove = UnityEngine.Random.Range(0f, 100f) < Y_move_rate;
 
@@ -178,6 +169,18 @@ namespace Flappy.Core
                     Y_move_rate = 100f;
                     pipe_y_speed = 30f;
                     break;
+            }
+        }
+
+        public int GetHighestScore() => PlayerPrefs.GetInt("HighestScore", 0);
+
+        public void TrySetHighestScore(int score)
+        {
+            int CurrentHighestScore = PlayerPrefs.GetInt("HighestScore", 0);
+            if (CurrentHighestScore < score)
+            {
+                PlayerPrefs.SetInt("HighestScore", score);
+                OnRecordBreak.Raise(score);
             }
         }
         #endregion

@@ -73,7 +73,7 @@ namespace Flappy.Core
         private void OnTriggerEnter2D(Collider2D other)
         {
             OnPlayerScore?.Invoke(Instance, EventArgs.Empty);
-            ResourceManager.Instance.AddResource(ResourceType.Gold, 1);  //TODO
+            ResourceManager.Instance.AddResource(RewardType.Gold, 1);  //TODO
         }
 
         #endregion

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5327468576313409900
+--- !u!1 &752212866447064040
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4769324429996538021}
-  - component: {fileID: 7645563185125240827}
-  - component: {fileID: 7830288180041328344}
+  - component: {fileID: 2878166528637906853}
+  - component: {fileID: 7941097701948048668}
+  - component: {fileID: 7961713941200746056}
   m_Layer: 0
-  m_Name: DailyReward_Manager
+  m_Name: LeaderBoard_Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4769324429996538021
+--- !u!4 &2878166528637906853
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5327468576313409900}
+  m_GameObject: {fileID: 752212866447064040}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,40 +33,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7645563185125240827
+--- !u!114 &7941097701948048668
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5327468576313409900}
+  m_GameObject: {fileID: 752212866447064040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1fe8a9c6e945df42a1e68e2b74977ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 3dbc2ba03cb0ba7498e1629ebc5bc8d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   UnparentOnAwake: 1
-  SOData: {fileID: 11400000, guid: 3e9623de2db884f48bfd97a3029064db, type: 2}
---- !u!114 &7830288180041328344
+  leaderboardId: Flappy_HighestScore_Leaderboard
+--- !u!114 &7961713941200746056
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5327468576313409900}
+  m_GameObject: {fileID: 752212866447064040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be604b76ea716474191a7f514978fa99, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cc94b7b4e49ffb44b619c496c8171c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventChanel: {fileID: 11400000, guid: 590ae50f755f0ab488b5a3b00d14ff23, type: 2}
+  eventChanel: {fileID: 11400000, guid: 904a779fe99700c49bfc34af29c9fe0d, type: 2}
   unityEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7645563185125240827}
-        m_TargetAssemblyTypeName: Flappy.Core.Manager.DailyRewardManager, Assembly-CSharp
-        m_MethodName: FirstLoad
-        m_Mode: 1
+      - m_Target: {fileID: 7941097701948048668}
+        m_TargetAssemblyTypeName: Flappy.Core.Manager.LeaderBoardManager, Assembly-CSharp
+        m_MethodName: AddScoreAsync
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

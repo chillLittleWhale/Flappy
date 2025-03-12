@@ -14,26 +14,28 @@ namespace AjaxNguyen.Core.UI
 
         void Start()
         {
-            // SaveLoadManager.Instance.OnResourceDataChanged += UpdateUI; //--
-            // SaveLoadManager.Instance.CallInvoke(); //--
-
             StartCoroutine(DelayRegisterEvent());
-            ResourceManager.Instance.OnResourceDataChanged += UpdateUI;
-            
+            ResourceManager.Instance.OnResourceDataChanged += UpdateResourceUI;
+            StaminaManager.Instance.OnStaminaChanged += UpdateStaminaUI;
         }
 
-        private void UpdateUI(object sender, ResourceData e)
+        private void UpdateResourceUI(object sender, ResourceData e)
         {
             diamonText.text = e.diamond.ToString();
             goldText.text = e.gold.ToString();
-            staminaText.text = e.stamina.ToString();
+        }
+
+        private void UpdateStaminaUI(object sender, string stamina)
+        {
+            staminaText.text = stamina;
         }
 
         private IEnumerator DelayRegisterEvent()
         {
             // chờ 1 frame để ResourceManager tạo xong dữ liệu
             yield return null;
-            UpdateUI(this, ResourceManager.Instance.data);
+            UpdateResourceUI(this, ResourceManager.Instance.data);
+            UpdateStaminaUI(this, StaminaManager.Instance.GetStaminaStatus());
         }
     }
 

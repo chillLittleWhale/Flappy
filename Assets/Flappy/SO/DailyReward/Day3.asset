@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11f61ea8a34227144b85bb0fcd9a80c8, type: 3}
-  m_Name: Skin_01
+  m_Script: {fileID: 11500000, guid: 3348d087eb14b334eb17971656027b28, type: 3}
+  m_Name: Day3
   m_EditorClassIdentifier: 
-  id: 1
-  skinName: Blu sky
-  skinIcon: {fileID: 21300000, guid: 834eb5611450ae546a3f9547301f000e, type: 3}
-  unlockCost: 0
+  type: 0
+  amount: 250

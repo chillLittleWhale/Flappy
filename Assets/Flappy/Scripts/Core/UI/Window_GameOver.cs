@@ -1,8 +1,10 @@
 using System;
 using DG.Tweening;
+using Flappy.Core.Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Flappy.Core.UI
 {
@@ -10,6 +12,8 @@ namespace Flappy.Core.UI
     {
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI highScoreText;
+        [SerializeField] private Button retryButton;
+        [SerializeField] private Button menuButton;
 
         [SerializeField] private GameObject panel;
 
@@ -18,6 +22,9 @@ namespace Flappy.Core.UI
             if (scoreText == null) scoreText = transform.Find("Score").GetComponent<TextMeshProUGUI>();
             if (highScoreText == null) highScoreText = transform.Find("HighestScore").GetComponent<TextMeshProUGUI>();
             if (panel == null) panel = transform.Find("Panel").gameObject;
+
+            retryButton.onClick.AddListener(RetryBtnOnClick);
+            menuButton.onClick.AddListener(MenuBtnOnClick);
         }
 
         void Start()
@@ -40,6 +47,7 @@ namespace Flappy.Core.UI
             if (e == GameState.GameOver)
             {
                 scoreText.text = Level.Instance.GetPlayerScore().ToString();
+                highScoreText.text = "Highest Score: " + Level.Instance.GetHighestScore().ToString();
                 Show();
 
                 panel.transform.DOLocalMove(new Vector3(0, 0, 0), 0.5f).SetEase(Ease.OutBack);
@@ -52,7 +60,14 @@ namespace Flappy.Core.UI
 
         public void RetryBtnOnClick()
         {
-            SceneManager.LoadScene("GameScene");
+            if (StaminaManager.Instance.TrySpendStamina(1))
+            {
+                SceneManager.LoadScene("GameScene");
+            }
+            else
+            {
+                SceneManager.LoadScene("MenuScene");
+            }
         }
 
         public void MenuBtnOnClick()
