@@ -1,3 +1,4 @@
+using AjaxNguyen.Event;
 using Flappy.Core.Manager;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +7,7 @@ namespace Flappy.Core
 {
     public class ScrollSnap : MonoBehaviour
     {
+        [SerializeField] private IntEventChanel CurrentUIIndexChanged;
         public ScrollRect scrollRect;
         public RectTransform contentPanel;
         public RectTransform prefabItem;  // item mẫu để lấy width cho tính toán
@@ -19,6 +21,8 @@ namespace Flappy.Core
 
         [SerializeField] bool isScrolling = false;
         [SerializeField] int currentIndex = 0;  // index của item hiện tại trong vùng chọn
+        private int tmpCurrentIndex = 0;
+        private int rawIndex = 0;
 
 
         void Start()
@@ -29,8 +33,14 @@ namespace Flappy.Core
 
         void Update()
         {
-            var rawIndex = Mathf.RoundToInt((GetCurrentCenterPos() - (h_LayoutGroup.spacing + h_LayoutGroup.padding.left)) / (prefabItem.rect.width + h_LayoutGroup.spacing));
-            currentIndex = Mathf.Clamp(rawIndex, 0, itemCount - 1);
+            rawIndex = Mathf.RoundToInt((GetCurrentCenterPos() - (h_LayoutGroup.spacing + h_LayoutGroup.padding.left)) / (prefabItem.rect.width + h_LayoutGroup.spacing));
+            tmpCurrentIndex = Mathf.Clamp(rawIndex, 0, itemCount - 1);
+
+            if (tmpCurrentIndex != currentIndex)
+            {
+                currentIndex = tmpCurrentIndex;
+                CurrentUIIndexChanged.Raise(currentIndex);
+            }
 
             if (isScrolling && scrollRect.velocity.magnitude < scrollThreshold)
             {

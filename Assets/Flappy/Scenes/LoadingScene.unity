@@ -228,6 +228,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: Audio_Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 7937156553422008353, guid: 84117f1e9b809104288e0e175270d4bf, type: 3}
+      propertyPath: soundGroups.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937156553422008353, guid: 84117f1e9b809104288e0e175270d4bf, type: 3}
+      propertyPath: soundGroups.Array.data[1].groupId
+      value: Map
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937156553422008353, guid: 84117f1e9b809104288e0e175270d4bf, type: 3}
+      propertyPath: soundGroups.Array.data[0].clips.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937156553422008353, guid: 84117f1e9b809104288e0e175270d4bf, type: 3}
+      propertyPath: soundGroups.Array.data[1].clips.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937156553422008353, guid: 84117f1e9b809104288e0e175270d4bf, type: 3}
+      propertyPath: 'soundGroups.Array.data[0].clips.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 3beb5c56c56137d41b6500bc9fee78bd, type: 3}
+    - target: {fileID: 7937156553422008353, guid: 84117f1e9b809104288e0e175270d4bf, type: 3}
+      propertyPath: 'soundGroups.Array.data[1].clips.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 44f7c8cb8de524a469e6bc533876acf9, type: 3}
+    - target: {fileID: 7937156553422008353, guid: 84117f1e9b809104288e0e175270d4bf, type: 3}
+      propertyPath: 'soundGroups.Array.data[1].clips.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: e3dddb7d820996c4cb1248a9f65a6be5, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -627,6 +655,14 @@ PrefabInstance:
     - target: {fileID: 2094320627044570152, guid: 998ad7d89fdbe1b4daf129cfea020ff8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3964447361427999989, guid: 998ad7d89fdbe1b4daf129cfea020ff8, type: 3}
+      propertyPath: data.mapList.Array.data[0].mapMusicName
+      value: CityVibe
+      objectReference: {fileID: 0}
+    - target: {fileID: 3964447361427999989, guid: 998ad7d89fdbe1b4daf129cfea020ff8, type: 3}
+      propertyPath: data.mapList.Array.data[1].mapMusicName
+      value: AdventureVibe
       objectReference: {fileID: 0}
     - target: {fileID: 9037265189047679019, guid: 998ad7d89fdbe1b4daf129cfea020ff8, type: 3}
       propertyPath: m_Name

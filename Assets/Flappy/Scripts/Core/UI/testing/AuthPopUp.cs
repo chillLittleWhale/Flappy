@@ -45,7 +45,7 @@ namespace Flappy
             {
                 await AuthManager.Instance.SignInWithUsernameAndPasswordAsync(name, password);
 
-                PanelManager.Instance.ClosePanel(PanelType.Authen);
+                // PanelManager.Instance.ClosePanel(PanelType.Authen);
             }
 
             isSigningIn = false;

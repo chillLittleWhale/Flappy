@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Threading.Tasks;
+using AjaxNguyen.Core.UI;
 using AjaxNguyen.Event;
 using AjaxNguyen.Utility.Event;
+using Flappy.Core.Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,11 +20,18 @@ namespace AjaxNguyen
 
         private float progress = 0f;
 
+        void Start()
+        {
+            HandleAthenPanel();
+        }
 
-        // void Start()
-        // {
-        //     EventSystem.Instance.Subscribe<bool>("SignInEvent", HandleLoading2);
-        // }
+        private async void HandleAthenPanel()
+        {
+            await Task.Delay(1000);
+            if (loadingBar.activeSelf) return;  // nếu đã load thì không hiện Authen Panel nữa
+
+            PanelManager.Instance.OpenPanel(PanelType.Authen);
+        }
 
         public void Load()
         {

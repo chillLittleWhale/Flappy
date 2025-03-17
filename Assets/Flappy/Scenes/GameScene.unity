@@ -679,8 +679,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Highest score: 0'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 50c12c23294124aa48490c44ac65a9e4, type: 2}
+  m_sharedMaterial: {fileID: 7746803525459343344, guid: 50c12c23294124aa48490c44ac65a9e4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -704,8 +704,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -933,6 +933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 633606975}
   - component: {fileID: 633606976}
+  - component: {fileID: 633606977}
   m_Layer: 0
   m_Name: ScoreWindow
   m_TagString: Untagged
@@ -973,6 +974,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9354b3458dded0c44befac554ae5355c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &633606977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633606974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cc94b7b4e49ffb44b619c496c8171c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventChanel: {fileID: 11400000, guid: b953cb9d2bed7e3449ae9a3fb4bd4e4a, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 633606976}
+        m_TargetAssemblyTypeName: Flappy.Core.UI.Window_Score, Assembly-CSharp
+        m_MethodName: UpdateUI
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &752682910
 GameObject:
   m_ObjectHideFlags: 0
@@ -1027,6 +1056,8 @@ GameObject:
   m_Component:
   - component: {fileID: 753106966}
   - component: {fileID: 753106967}
+  - component: {fileID: 753106968}
+  - component: {fileID: 753106969}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -1069,6 +1100,63 @@ MonoBehaviour:
   pipe_y_speed: 2
   pipe_x_speed: 10
   OnRecordBreak: {fileID: 11400000, guid: 904a779fe99700c49bfc34af29c9fe0d, type: 2}
+  OnScoreChangedChanel: {fileID: 11400000, guid: b953cb9d2bed7e3449ae9a3fb4bd4e4a, type: 2}
+--- !u!114 &753106968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753106965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320694e8df588a7459a9b91ace001c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventChanel: {fileID: 11400000, guid: 949683399510d324f8016a2522fb3431, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 753106967}
+        m_TargetAssemblyTypeName: Flappy.Core.Level, Assembly-CSharp
+        m_MethodName: Level_OnPlayerDeath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &753106969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753106965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320694e8df588a7459a9b91ace001c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventChanel: {fileID: 11400000, guid: 74769aa2101ae1541ac284ea3c26a1af, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 753106967}
+        m_TargetAssemblyTypeName: Flappy.Core.Level, Assembly-CSharp
+        m_MethodName: Level_OnPlayerScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &825639059
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,6 +1795,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minFlapForce: 60
   maxFlapForce: 100
+  OnPlayerDeathChanel: {fileID: 11400000, guid: 949683399510d324f8016a2522fb3431, type: 2}
+  OnPlayerScoreChanel: {fileID: 11400000, guid: 74769aa2101ae1541ac284ea3c26a1af, type: 2}
 --- !u!70 &1165842313
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2135,8 +2225,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 50c12c23294124aa48490c44ac65a9e4, type: 2}
+  m_sharedMaterial: {fileID: 7746803525459343344, guid: 50c12c23294124aa48490c44ac65a9e4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2166,7 +2256,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2237,7 +2327,7 @@ Transform:
   m_GameObject: {fileID: 1542996466}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 110, y: -0, z: -1}
+  m_LocalPosition: {x: 115, y: -0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

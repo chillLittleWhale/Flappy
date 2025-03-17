@@ -175,15 +175,18 @@ namespace Flappy.Core.Manager
                 onLogin.Raise(true);
                 // await EventSystem.Instance.RaiseEventAsync("SignInEvent", true);
 
+                PanelManager.Instance.ClosePanel(PanelType.Authen);
                 PanelManager.Instance.OpenPanel(PanelType.MainMenu);
             }
             catch (AuthenticationException e)
             {
                 Debug.LogError($"SignInWithUsernameAndPassword Failed: {e.Message}");
+                PanelManager.Instance.ShowErrorPopup("Failed to sign in due to: " + e.Message);
             }
             catch (RequestFailedException e)
             {
                 Debug.LogError($"SignInWithUsernameAndPassword Failed: {e.Message}");
+                PanelManager.Instance.ShowErrorPopup("Failed to sign in due to: " + e.Message);
             }
             finally
             {

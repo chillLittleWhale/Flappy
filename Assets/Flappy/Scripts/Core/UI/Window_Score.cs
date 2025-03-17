@@ -16,22 +16,27 @@ namespace Flappy.Core.UI
 
         void Start()
         {
-            highestScoreText.text = "HighestScore: " + PlayerPrefs.GetInt("HighestScore", 0).ToString();
+            highestScoreText.text = "Highest Score: " + PlayerPrefs.GetInt("HighestScore", 0).ToString();
         }
 
-        private void OnEnable()
-        {
-            Level.Instance.OnScoreChanged += UpdateUI;
-        }
+        // private void OnEnable()
+        // {
+        //     Level.Instance.OnScoreChanged += UpdateUI;
+        // }
 
-        private void OnDisable()
-        {
-            Level.Instance.OnScoreChanged -= UpdateUI;
-        }
+        // private void OnDisable()
+        // {
+        //     Level.Instance.OnScoreChanged -= UpdateUI;
+        // }
 
-        private void UpdateUI(object sender, int e)
+        // private void UpdateUI(object sender, int e)
+        // {
+        //     scoreText.text = e.ToString();
+        // }
+
+        public void UpdateUI(int newScore)
         {
-            scoreText.text = e.ToString();
+            scoreText.text = newScore.ToString();
         }
     }
 }

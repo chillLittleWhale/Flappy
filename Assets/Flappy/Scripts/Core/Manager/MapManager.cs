@@ -33,6 +33,9 @@ namespace Flappy.Core.Manager
             {
                 if (currentMap != null) Destroy(currentMap); // Xóa map cũ
                 currentMap = Instantiate(mapPrefab);
+
+                var selectedMap = data.mapList.Find(m => m.id == data.selectedMapID);
+                MusicManager.Instance.PlayMusic(selectedMap.mapMusicName);  //Todo
             }
         }
 

@@ -1,0 +1,1 @@
+C:\UNITY\Project\Flappy\Library\Bee\Android\Prj\Mono2x\Gradle\unityLibrary\build\intermediates\cxx\Debug\43n2o5q6\obj\armeabi-v7a

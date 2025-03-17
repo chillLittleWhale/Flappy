@@ -1,4 +1,5 @@
 using System;
+using AjaxNguyen.Event;
 using Flappy.Core.Manager;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
@@ -19,8 +20,11 @@ namespace Flappy.Core
         #endregion
 
         #region Events
-        public event EventHandler OnPlayerDeath;
-        public event EventHandler OnPlayerScore;
+        // public event EventHandler OnPlayerDeath;
+        // public event EventHandler OnPlayerScore;
+
+        [SerializeField] EmptyEventChanel OnPlayerDeathChanel;
+        [SerializeField] EmptyEventChanel OnPlayerScoreChanel;
 
         #endregion
 
@@ -65,15 +69,26 @@ namespace Flappy.Core
         {
             if (other.gameObject.CompareTag("ForeGround") || other.gameObject.CompareTag("Pipe"))
             {
+                // SfxManager.Instance.PlaySfx("Flappy-SFX-Hit", transform.position);
                 rb.bodyType = RigidbodyType2D.Static;
-                OnPlayerDeath?.Invoke(Instance, EventArgs.Empty);
+                // OnPlayerDeath?.Invoke(Instance, EventArgs.Empty);
+
+                OnPlayerDeathChanel.Raise(new Empty());
+
+                if (PlayerPrefs.GetInt("Vibration", 1) == 1)
+                {
+                    Handheld.Vibrate();
+                }
             }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            OnPlayerScore?.Invoke(Instance, EventArgs.Empty);
-            ResourceManager.Instance.AddResource(RewardType.Gold, 1);  //TODO
+            // SfxManager.Instance.PlaySfx("Flappy-SFX-Score", transform.position);
+            // OnPlayerScore?.Invoke(Instance, EventArgs.Empty);
+
+            OnPlayerScoreChanel.Raise(new Empty());
+            // ResourceManager.Instance.AddResource(RewardType.Gold, 1);  //TODO
         }
 
         #endregion
@@ -99,6 +114,7 @@ namespace Flappy.Core
 
         private void MinFlap()
         {
+            SfxManager.Instance.PlaySfx("Flappy-SFX-Flap", transform.position, 0.5f); //Todo
             rb.linearVelocity = Vector2.up * minFlapForce;
         }
 

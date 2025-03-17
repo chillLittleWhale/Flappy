@@ -2,14 +2,13 @@ using Flappy.Core.Manager;
 using AjaxNguyen.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Threading.Tasks;
-using AjaxNguyen;
-using AjaxNguyen.Utility.Event;
+using UnityEngine.SceneManagement;
 
 namespace Flappy.Core.Panels
 {
     public class SettingPanel : Panel
     {
+
         [SerializeField] Button logoutButton;
         [SerializeField] Slider musicSlider;
         [SerializeField] Slider sfxSlider;
@@ -22,33 +21,27 @@ namespace Flappy.Core.Panels
             logoutButton.onClick.AddListener(SignOut);
             musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
             sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
-
-            // test async event bus
-            // AsyncEventBus.Subscribe<AsyncEBusTest>(HandleSignOutAsync);
         }
-
-        // private async Task HandleSignOutAsync(AsyncEBusTest msg)  // test
-        // {
-        //     await Task.Delay(1000);
-        //     Debug.Log("Test async event bus log");
-        // }
-
-        // private async Task Lmao() // test
-        // {
-        //     await AsyncEventBus.Publish(new AsyncEBusTest());
-        // }
 
         void Start()
         {
             musicSlider.value = FromVolumnToValue(PlayerPrefs.GetFloat("musicVolume", 1f));
             sfxSlider.value = FromVolumnToValue(PlayerPrefs.GetFloat("sfxVolume", 1f));
-            MusicManager.Instance.PlayMusic("MuoiNganNam");  //TODO:  tạm để đây, chỉnh sau
+            MusicManager.Instance.PlayMusic("AiRoiCungBoAnhDi");  //TODO:  tạm để đây, chỉnh sau
         }
 
         private async void SignOut()
         {
-            Debug.LogWarning("SettingPanel: SignOut");
-            await AuthManager.Instance.SignOut();
+            // Debug.LogWarning("SettingPanel: SignOut");
+            if (IsNetworkAvailable())
+            {
+                await AuthManager.Instance.SignOut();
+                SceneManager.LoadScene("LoadingScene");
+            }
+            else
+            {
+                PanelManager.Instance.ShowErrorPopup("No internet connection, try latter");
+            }
         }
 
         private void OnMusicVolumeChanged(float value)
@@ -73,6 +66,11 @@ namespace Flappy.Core.Panels
         private float FromVolumnToValue(float volume)
         {
             return Mathf.Pow(10f, volume / 20f);
+        }
+
+        bool IsNetworkAvailable()
+        {
+            return Application.internetReachability != NetworkReachability.NotReachable;
         }
     }
 }

@@ -9,14 +9,16 @@ namespace Flappy.Core
         public string id;
         public string mapName;
         public Sprite mapIcon;
+        public string mapMusicName;
         public int unlockCost;
         public bool isUnlocked;
 
-        public Map(string id, string name, Sprite icon, int cost, bool isUnlocked)
+        public Map(string id, string name, Sprite icon, string mapMusicName, int cost, bool isUnlocked)
         {
             this.id = id;
             this.mapName = name;
             this.mapIcon = icon;
+            this.mapMusicName = mapMusicName;
             this.unlockCost = cost;
             this.isUnlocked = isUnlocked;
         }

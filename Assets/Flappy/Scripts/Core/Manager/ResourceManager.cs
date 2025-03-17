@@ -6,7 +6,7 @@ namespace Flappy.Core.Manager
 {
     public class ResourceManager : PersistentSingleton<ResourceManager>
     {
-        public event EventHandler<ResourceData> OnResourceDataChanged; 
+        public event EventHandler<ResourceData> OnResourceDataChanged;
         public ResourceData data;
 
         private ResourceData tempData;  // when save load error occurs, this will make sure the real data is not be effected
@@ -75,18 +75,26 @@ namespace Flappy.Core.Manager
 
         private void TrySaveData(ResourceData data)
         {
-            if (SaveLoadManager.Instance.TrySaveData_Local<ResourceData>(data,"ResourceData")) 
+            if (SaveLoadManager.Instance.TrySaveData_Local<ResourceData>(data, "ResourceData"))
             {
                 this.data = data;
                 OnResourceDataChanged?.Invoke(this, data);
             }
             else Debug.LogWarning("Save resource data fail");
         }
-        
+
         public void SetData(ResourceData data)
         {
             this.data = data;
         }
+
+        #region Event Listener
+        public void OnPlayerScore()
+        {
+            AddResource(RewardType.Gold, 1);
+        }
+
+        #endregion
     }
 
     [Serializable]

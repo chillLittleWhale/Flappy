@@ -1,6 +1,5 @@
 using System;
 using Flappy.Core.Manager;
-using AjaxNguyen.Utility.ObjectPooling;
 using UnityEngine;
 using AjaxNguyen.Event;
 
@@ -38,18 +37,30 @@ namespace Flappy.Core
         #region Events
         public event EventHandler<int> OnScoreChanged;
         public event EventHandler<GameState> OnStateChange;
-        [SerializeField] IntEventChanel OnRecordBreak;  
+        [SerializeField] IntEventChanel OnRecordBreak;
+        [SerializeField] IntEventChanel OnScoreChangedChanel;
 
-        private void Level_OnPlayerScore(object sender, System.EventArgs e)
+        // public void Level_OnPlayerScore(object sender, System.EventArgs e)
+        // {
+        //     playerScore += 1;
+        //     OnScoreChanged?.Invoke(this, playerScore);
+        // }
+
+        // public void Level_OnPlayerDeath(object sender, System.EventArgs e)
+        // {
+        //     ChangeState(GameState.GameOver);
+        //     TrySetHighestScore(playerScore);
+        // }
+
+        public void Level_OnPlayerScore()
         {
             playerScore += 1;
-            OnScoreChanged?.Invoke(this, playerScore);
+            // OnScoreChanged?.Invoke(this, playerScore);
+            OnScoreChangedChanel.Raise(playerScore);
         }
 
-        private void Level_OnPlayerDeath(object sender, System.EventArgs e)
+        public void Level_OnPlayerDeath()
         {
-            // state = GameState.GameOver;
-            // OnStateChange?.Invoke(this, state);
             ChangeState(GameState.GameOver);
             TrySetHighestScore(playerScore);
         }
@@ -97,17 +108,19 @@ namespace Flappy.Core
             }
         }
 
-        void OnEnable()
-        {
-            Player.Instance.OnPlayerScore += Level_OnPlayerScore;
-            Player.Instance.OnPlayerDeath += Level_OnPlayerDeath;
-        }
+        // void OnEnable()
+        // {
+        //     // Player.Instance.OnPlayerScore += Level_OnPlayerScore;
+        //     // Player.Instance.OnPlayerDeath += Level_OnPlayerDeath;
 
-        void OnDisable()
-        {
-            Player.Instance.OnPlayerScore -= Level_OnPlayerScore;
-            Player.Instance.OnPlayerDeath -= Level_OnPlayerDeath;
-        }
+
+        // }
+
+        // void OnDisable()
+        // {
+        //     // Player.Instance.OnPlayerScore -= Level_OnPlayerScore;
+        //     // Player.Instance.OnPlayerDeath -= Level_OnPlayerDeath;
+        // }
         #endregion
 
         #region Other methods
@@ -119,7 +132,7 @@ namespace Flappy.Core
             var minHeight = -CAM_OTHOR_SIZE + gapSize * 0.5f + MIN_HEIGHT_TO_EDGE + GROUND_HEIGHT;
             var maxHeight = CAM_OTHOR_SIZE - gapSize * 0.5f - MIN_HEIGHT_TO_EDGE;
 
-            pipeSpawner.CreatePipes(gapSize, ySpawnPos, canVerticalMove, pipe_x_speed, pipe_y_speed, minHeight, maxHeight); 
+            pipeSpawner.CreatePipes(gapSize, ySpawnPos, canVerticalMove, pipe_x_speed, pipe_y_speed, minHeight, maxHeight);
         }
 
         public GameState GetState() => state;

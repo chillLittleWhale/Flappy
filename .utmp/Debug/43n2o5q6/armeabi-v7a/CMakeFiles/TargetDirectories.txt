@@ -1,0 +1,5 @@
+C:/UNITY/Project/Flappy/.utmp/Debug/43n2o5q6/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/UNITY/Project/Flappy/.utmp/Debug/43n2o5q6/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+C:/UNITY/Project/Flappy/.utmp/Debug/43n2o5q6/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/UNITY/Project/Flappy/.utmp/Debug/43n2o5q6/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
+C:/UNITY/Project/Flappy/.utmp/Debug/43n2o5q6/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir

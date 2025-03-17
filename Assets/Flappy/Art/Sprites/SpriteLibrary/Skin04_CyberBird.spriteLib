@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Library:
+  - m_Name: Flap
+    m_Hash: 840286563
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: UpFlap
+      m_Hash: 117622359
+      m_Sprite: {fileID: 21300000, guid: 5bc5a02bd982e584fafb039c27992d53, type: 3}
+      m_FromMain: 1
+      m_SpriteOverride: {fileID: 5465074431811111037, guid: 46f8aeb7750eb5a41a35b610998facd5, type: 3}
+    - m_Name: MidFlap
+      m_Hash: 682121895
+      m_Sprite: {fileID: 21300000, guid: d12cf111cc46bf949ad6906e02cf9e68, type: 3}
+      m_FromMain: 1
+      m_SpriteOverride: {fileID: 3922381547032190047, guid: d800491ad088aec44b5dc13cd78a037b, type: 3}
+    - m_Name: DownFlap
+      m_Hash: 377472344
+      m_Sprite: {fileID: 21300000, guid: e957c08d3def41c48ac39c2277c41388, type: 3}
+      m_FromMain: 1
+      m_SpriteOverride: {fileID: -7507642487713057298, guid: 5f41b5706133d2044b5e9f0ed272f49c, type: 3}
+    m_FromMain: 1
+    m_EntryOverrideCount: 3
+  m_PrimaryLibraryGUID: fc276ac63098e964d8043a1a697097b7
+  m_ModificationHash: 638775647378989891
+  m_Version: 1

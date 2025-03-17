@@ -174,6 +174,8 @@ GameObject:
   - component: {fileID: 8995187275846421283}
   - component: {fileID: 738057577102537584}
   - component: {fileID: 7845590574545765411}
+  - component: {fileID: 8200949225236864019}
+  - component: {fileID: 6140437817247606224}
   m_Layer: 0
   m_Name: SFX_Manger
   m_TagString: Untagged
@@ -228,6 +230,71 @@ MonoBehaviour:
   - groupId: Button
     clips:
     - {fileID: 8300000, guid: c53c3cd5e519d7741a15bed2f1e9ef6b, type: 3}
+  - groupId: Flap
+    clips:
+    - {fileID: 8300000, guid: 4cff4fec9e79c124f8f22ed8b2d508d2, type: 3}
+  - groupId: Hit
+    clips:
+    - {fileID: 8300000, guid: a7e0da951b89fe242b89f527d95635be, type: 3}
+  - groupId: Score
+    clips:
+    - {fileID: 8300000, guid: 8c7162b1bcebb1f439264bce0879a54a, type: 3}
+--- !u!114 &8200949225236864019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4441107383708808399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320694e8df588a7459a9b91ace001c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventChanel: {fileID: 11400000, guid: 74769aa2101ae1541ac284ea3c26a1af, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 738057577102537584}
+        m_TargetAssemblyTypeName: Flappy.Core.Manager.SfxManager, Assembly-CSharp
+        m_MethodName: OnPlayerScore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6140437817247606224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4441107383708808399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320694e8df588a7459a9b91ace001c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventChanel: {fileID: 11400000, guid: 949683399510d324f8016a2522fb3431, type: 2}
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 738057577102537584}
+        m_TargetAssemblyTypeName: Flappy.Core.Manager.SfxManager, Assembly-CSharp
+        m_MethodName: OnPlayerDead
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7026919376863876442
 GameObject:
   m_ObjectHideFlags: 0

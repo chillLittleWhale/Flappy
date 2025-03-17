@@ -26,7 +26,7 @@ namespace Flappy.Core.Manager
             PlayerPrefs.SetFloat("musicVolume", volume);
         }
 
-        public void PlayMusic(string trackName, float fadeDuration = 0.5f)
+        public void PlayMusic(string trackName, float fadeDuration = 0.25f)
         {
             StartCoroutine(AnimateMusicCrossfade(musicLibrary.GetAudioClip(trackName), fadeDuration));
         }

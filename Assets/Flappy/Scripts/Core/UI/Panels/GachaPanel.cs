@@ -11,13 +11,14 @@ namespace Flappy.Core.Panels
 {
     public class GachaPanel : Panel
     {
-        [SerializeField] TextMeshProUGUI textName;
+        [SerializeField] TextMeshProUGUI nameText;
         [SerializeField] int nomalGachaCost = 1000; // gold
         [SerializeField] int advancedGachaCost = 50; // diamon
 
         [SerializeField] Button nomalGachaButton;
         [SerializeField] Button advancedGachaButton;
-        public Image image;
+        [SerializeField] Image rewardImage;
+        [SerializeField] Sprite defaultSprite;
 
         private Skin reward;
         [SerializeField] SkinData skinData;
@@ -28,6 +29,12 @@ namespace Flappy.Core.Panels
 
             nomalGachaButton.onClick.AddListener(OnClickNomalGacha);
             advancedGachaButton.onClick.AddListener(OnClickAdvancedGacha);
+        }
+
+        protected override void OnShow()
+        {
+            rewardImage.sprite = defaultSprite;
+            nameText.text = "";
         }
 
         public void OnClickNomalGacha() // gacha bằng vàng, có thể ra skin đã có
@@ -91,8 +98,8 @@ namespace Flappy.Core.Panels
 
         private void UpdateUI()
         {
-            textName.text = reward.skinName;
-            image.sprite = reward.skinIcon;
+            nameText.text = reward.skinName;
+            rewardImage.sprite = reward.skinIcon;
         }
 
         private List<Skin> GetLockedSkins()

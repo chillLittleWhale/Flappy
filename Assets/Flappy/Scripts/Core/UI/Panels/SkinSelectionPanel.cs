@@ -14,6 +14,7 @@ namespace Flappy.Core.Panels
         [SerializeField] Transform content; // Content của ScrollView
         [SerializeField] GameObject skinItemPrefab; // Prefab của mỗi skin
         [SerializeField] TextMeshProUGUI skinCount_Text;
+        [SerializeField] GameObject iconSelected;
 
         public RectTransform contentPanel;
         public RectTransform prefabItem;  // item mẫu để lấy width cho tính toán
@@ -35,7 +36,7 @@ namespace Flappy.Core.Panels
         protected override void OnShow()
         {
             Reload(this, data);
-            SnapToChild(data.skinList.FindIndex(skin => skin.id == data.selectedSkinID), data.skinList.Count);
+            SnapToChild(data.skinList.FindIndex(skin => skin.id == data.selectedSkinID));
         }
 
         void OnDisable()
@@ -63,12 +64,19 @@ namespace Flappy.Core.Panels
             }
 
             // Tạo các item và gán dữ liệu
-            foreach (Skin skin in data.skinList)
+            // foreach (Skin skin in data.skinList)
+            // {
+            //     GameObject item = Instantiate(skinItemPrefab, content);
+            //     SkinItemUI skinItemUI = item.GetComponent<SkinItemUI>();
+
+            //     skinItemUI.Initialize(skin);
+            // }
+            for(int i = 0; i < data.skinList.Count; i++) 
             {
                 GameObject item = Instantiate(skinItemPrefab, content);
                 SkinItemUI skinItemUI = item.GetComponent<SkinItemUI>();
 
-                skinItemUI.Initialize(skin);
+                skinItemUI.Initialize(data.skinList[i], i);
             }
         }
 
@@ -107,12 +115,31 @@ namespace Flappy.Core.Panels
         /// </summary>
         /// <param name="index">The index of the child to snap to.</param>
         /// <param name="childNumber">The total number of children.</param>
-        private void SnapToChild(int index, int childNumber)
+        private void SnapToChild(int index)
         {   // vì khi start thì contentPanel.rect.width đang bằng 0 do child của nó sẽ bị clear bởi hàm PopulateItems của CharacterPanel, nên phải tự tính
+            int childNumber = data.skinList.Count;
             var contentPanelWith = h_LayoutGroup.padding.left * 2f + childNumber * prefabItem.rect.width + (childNumber - 1) * h_LayoutGroup.spacing;
             var targetPosX = -(index * (prefabItem.rect.width + h_LayoutGroup.spacing) + (h_LayoutGroup.spacing + h_LayoutGroup.padding.left) - contentPanelWith * 0.5f);
 
             contentPanel.anchoredPosition = new Vector2(targetPosX, contentPanel.anchoredPosition.y);
         }
+
+
+
+        #region EventChanel callback
+        public void OnUiItemClicked(int index) => SnapToChild(index); 
+
+        public void OnCurrentUiItemChange(int index)
+        {
+            if (data.selectedSkinID == index.ToString())
+            {
+                iconSelected.SetActive(true);
+            }
+            else
+            {
+                iconSelected.SetActive(false);
+            }
+        }
+        #endregion
     }
 }

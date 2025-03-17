@@ -48,7 +48,7 @@ MonoBehaviour:
   data:
     skinList:
     - id: 0
-      skinName: Default char
+      skinName: Default
       skinIcon: {fileID: 21300000, guid: 5bc5a02bd982e584fafb039c27992d53, type: 3}
       libraryAsset: {fileID: 7108339969198208228, guid: fc276ac63098e964d8043a1a697097b7, type: 3}
       unlockCost: 0
@@ -66,39 +66,15 @@ MonoBehaviour:
       unlockCost: 0
       isUnlocked: 0
     - id: 3
-      skinName: char 03
-      skinIcon: {fileID: 21300000, guid: b7d63ac926ed846f390d61c8832ea34c, type: 3}
-      libraryAsset: {fileID: 0}
+      skinName: Knight
+      skinIcon: {fileID: 6846741067194778677, guid: 2c89b5e5e44266945a65b9afb4b2ce0e, type: 3}
+      libraryAsset: {fileID: 7108339969198208228, guid: f3f1310a69be57b43ae2483167194482, type: 3}
       unlockCost: 0
       isUnlocked: 0
     - id: 4
-      skinName: char 04
-      skinIcon: {fileID: 21300000, guid: f6a78c692cf27471f8a5e16609281d22, type: 3}
-      libraryAsset: {fileID: 0}
-      unlockCost: 0
-      isUnlocked: 0
-    - id: 5
-      skinName: char 05
-      skinIcon: {fileID: 21300000, guid: eb22d376b7994415aac9d7a87ff27901, type: 3}
-      libraryAsset: {fileID: 0}
-      unlockCost: 0
-      isUnlocked: 0
-    - id: 6
-      skinName: char 06
-      skinIcon: {fileID: 21300000, guid: 7135d585f82ae408d8713917af908381, type: 3}
-      libraryAsset: {fileID: 0}
-      unlockCost: 0
-      isUnlocked: 0
-    - id: 7
-      skinName: char 07
-      skinIcon: {fileID: 21300000, guid: 813b7c7ef9aa146f9b4d2333c590c88c, type: 3}
-      libraryAsset: {fileID: 0}
-      unlockCost: 0
-      isUnlocked: 0
-    - id: 8
-      skinName: char 08
-      skinIcon: {fileID: 21300000, guid: d6e84deb03dd24e2da5dd58908ee11b2, type: 3}
-      libraryAsset: {fileID: 0}
+      skinName: 2077
+      skinIcon: {fileID: 3922381547032190047, guid: d800491ad088aec44b5dc13cd78a037b, type: 3}
+      libraryAsset: {fileID: 7108339969198208228, guid: 722fd40a22d51994bb5a9efadbbc3f91, type: 3}
       unlockCost: 0
       isUnlocked: 0
     selectedSkinID: 0
