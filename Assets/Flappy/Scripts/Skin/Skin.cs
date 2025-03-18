@@ -11,15 +11,17 @@ namespace Flappy.Core
         public string skinName;
         public Sprite skinIcon;
         public SpriteLibraryAsset libraryAsset;
-        public int unlockCost;
+        public string description;
+        public int fallbackGold;  // nếu gacha trùng thì hoàn lại 1 lượng vàng
         public bool isUnlocked;
 
-        public Skin(string id, string name, Sprite icon, int cost, bool isUnlocked)
+        public Skin(string id, string name, Sprite icon, string description, int fallbackGold, bool isUnlocked)
         {
             this.id = id;
             this.skinName = name;
             this.skinIcon = icon;
-            this.unlockCost = cost;
+            this.description = description;
+            this.fallbackGold = fallbackGold;
             this.isUnlocked = isUnlocked;
         }
 

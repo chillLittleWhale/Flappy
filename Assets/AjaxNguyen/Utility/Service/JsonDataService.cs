@@ -31,7 +31,7 @@ namespace AjaxNguyen.Utility.Service
                 return false;
             }
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.Indented)); 
+            File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.Indented));
             return true;
         }
 
@@ -41,13 +41,16 @@ namespace AjaxNguyen.Utility.Service
 
             if (!File.Exists(path))
             {
-                Debug.LogWarning($"No existed GameData with name '{name}', create new one."); //TODO: 
-                return default;//new T();
+                TextAsset defaultData = Resources.Load<TextAsset>("Default" + name);
+                string defaultDataJson = defaultData.text;
+                File.WriteAllText(path, defaultDataJson);
+                Debug.LogWarning($"GameData with name '{name}' does not exist, create default version of it.");
+                // return default;//new T();
             }
 
             try
             {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+                return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
             }
             catch (Exception ex)
             {

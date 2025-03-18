@@ -1,4 +1,4 @@
-using System;
+
 using AjaxNguyen.Event;
 using Flappy.Core.Manager;
 using UnityEngine;
@@ -20,9 +20,6 @@ namespace Flappy.Core
         #endregion
 
         #region Events
-        // public event EventHandler OnPlayerDeath;
-        // public event EventHandler OnPlayerScore;
-
         [SerializeField] EmptyEventChanel OnPlayerDeathChanel;
         [SerializeField] EmptyEventChanel OnPlayerScoreChanel;
 
@@ -69,9 +66,7 @@ namespace Flappy.Core
         {
             if (other.gameObject.CompareTag("ForeGround") || other.gameObject.CompareTag("Pipe"))
             {
-                // SfxManager.Instance.PlaySfx("Flappy-SFX-Hit", transform.position);
                 rb.bodyType = RigidbodyType2D.Static;
-                // OnPlayerDeath?.Invoke(Instance, EventArgs.Empty);
 
                 OnPlayerDeathChanel.Raise(new Empty());
 
@@ -84,11 +79,7 @@ namespace Flappy.Core
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            // SfxManager.Instance.PlaySfx("Flappy-SFX-Score", transform.position);
-            // OnPlayerScore?.Invoke(Instance, EventArgs.Empty);
-
             OnPlayerScoreChanel.Raise(new Empty());
-            // ResourceManager.Instance.AddResource(RewardType.Gold, 1);  //TODO
         }
 
         #endregion

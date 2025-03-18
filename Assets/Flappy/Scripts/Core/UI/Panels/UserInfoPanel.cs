@@ -29,6 +29,12 @@ namespace Flappy.Core.Panels
             Reload(this, data);
         }
 
+        public void FirstReload()  // quá trình đăng nhập làm cho data được set và trong các Manager chậm hơn, hàm Start của các UIPanel chưa có dữ liệu chuẩn để hiển thị, nên phải Update lần đầu bằng event riêng
+        {
+            data = PlayerInfoManager.Instance.data;
+            Reload(this, data);
+        }
+
         public void Reload(object sender, PlayerInfoData e)
         {
             playerNameText.text = e.playerName;

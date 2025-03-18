@@ -1,0 +1,13 @@
+{
+  "mapList": [
+    {
+      "id": "0",
+      "isUnlocked": true
+    },
+    {
+      "id": "1",
+      "isUnlocked": false
+    }
+  ],
+  "selectedMapID": "0"
+}

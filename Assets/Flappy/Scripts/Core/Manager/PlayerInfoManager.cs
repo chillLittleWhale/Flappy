@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using AjaxNguyen.Utility;
 using Unity.Services.Authentication;
 using UnityEngine;
@@ -11,7 +9,7 @@ namespace Flappy.Core.Manager
     public class PlayerInfoManager : PersistentSingleton<PlayerInfoManager>
     {
         public event EventHandler<PlayerInfoData> OnPlayerInfoDataChanged; //--
-        public PlayerInfoData data;
+        public PlayerInfoData data = new();
         private PlayerInfoData tempData;  // when save load error occurs, this will make sure the real data is not be effected
 
 
@@ -47,22 +45,33 @@ namespace Flappy.Core.Manager
         public void SetData(PlayerInfoData data)
         {
             this.data = data;
+            PlayerPrefs.SetInt("HighestScore", data.highestScore);
         }
 
     }
 
 
     [Serializable]
-    public struct PlayerInfoData
+    public class PlayerInfoData
     {
         public string playerName;
         public string playerPassword;
+        public int highestScore;
 
+        //copy constructor
         public PlayerInfoData(PlayerInfoData data)
         {
             playerName = data.playerName;
             playerPassword = data.playerPassword;
+            highestScore = data.highestScore;
         }
 
+        public PlayerInfoData()
+        {
+            playerName = "New_Player";
+            playerPassword = "DefaultPass1@";
+            highestScore = 0;
+        }
     }
 }
+

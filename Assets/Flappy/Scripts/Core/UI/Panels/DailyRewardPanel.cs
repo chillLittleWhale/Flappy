@@ -21,6 +21,11 @@ namespace Flappy.Core.Panels
             InitializeRewards(); // Khởi tạo UI khi bắt đầu
         }
 
+        void OnDestroy()
+        {
+            DailyRewardManager.Instance.OnDailyRewardDataChanged -= Reload;            
+        }
+
         void InitializeRewards()
         {
             if (dataSO != null)// && rewardUIItems.Length == dataSO.dailyRewards.Length)

@@ -8,7 +8,6 @@ namespace Flappy.Core.Panels
 {
     public class SettingPanel : Panel
     {
-
         [SerializeField] Button logoutButton;
         [SerializeField] Slider musicSlider;
         [SerializeField] Slider sfxSlider;
@@ -32,7 +31,6 @@ namespace Flappy.Core.Panels
 
         private async void SignOut()
         {
-            // Debug.LogWarning("SettingPanel: SignOut");
             if (IsNetworkAvailable())
             {
                 await AuthManager.Instance.SignOut();

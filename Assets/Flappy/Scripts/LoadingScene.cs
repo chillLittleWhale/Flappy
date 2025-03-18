@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
 using System.Threading.Tasks;
 using AjaxNguyen.Core.UI;
-using AjaxNguyen.Event;
-using AjaxNguyen.Utility.Event;
 using Flappy.Core.Manager;
 using TMPro;
 using UnityEngine;
@@ -27,9 +24,10 @@ namespace AjaxNguyen
 
         private async void HandleAthenPanel()
         {
-            await Task.Delay(1000);
-            if (loadingBar.activeSelf) return;  // nếu đã load thì không hiện Authen Panel nữa
+            await Task.Delay(1200);
+            if (!loadingBar) return;  // nếu đã load thì không hiện Authen Panel nữa
 
+            Debug.LogWarning("HandleAthenPanel called????");
             PanelManager.Instance.OpenPanel(PanelType.Authen);
         }
 

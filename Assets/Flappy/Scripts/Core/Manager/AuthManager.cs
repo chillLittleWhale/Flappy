@@ -32,7 +32,7 @@ namespace Flappy.Core.Manager
             await StartGame();
         }
 
-        private async Task StartGame()
+        private async Task StartGame() //Task
         {
             if (IsNetworkAvailable())
             {
@@ -77,7 +77,7 @@ namespace Flappy.Core.Manager
                     Debug.Log("UGS is already initialized or initializing.");
                     return;
                 }
-                else //if (UnityServices.State == ServicesInitializationState.Uninitialized)
+                else 
                 {
                     var option = new InitializationOptions();
                     option.SetProfile("default_profile");
@@ -104,20 +104,17 @@ namespace Flappy.Core.Manager
             {
                 PanelManager.Instance.OpenPanel(PanelType.MainMenu);
                 onLogin.Raise(false);
-                // await EventSystem.Instance.RaiseEventAsync("SignInEvent", false);
             }
             else if (AuthenticationService.Instance.SessionTokenExists)
             {
                 if (await SignInAnonymousAsync())
                 {
                     onLogin.Raise(false);
-                    // await EventSystem.Instance.RaiseEventAsync("SignInEvent", false);
                 }
                 else
                 {
                     PanelManager.Instance.OpenPanel(PanelType.Authen);
                 }
-
             }
             else
             {
@@ -173,19 +170,18 @@ namespace Flappy.Core.Manager
 
                 PlayerPrefs.SetString("CurrentAccountID", AuthenticationService.Instance.PlayerId);
                 onLogin.Raise(true);
-                // await EventSystem.Instance.RaiseEventAsync("SignInEvent", true);
 
                 PanelManager.Instance.ClosePanel(PanelType.Authen);
                 PanelManager.Instance.OpenPanel(PanelType.MainMenu);
             }
             catch (AuthenticationException e)
             {
-                Debug.LogError($"SignInWithUsernameAndPassword Failed: {e.Message}");
+                Debug.LogWarning($"SignInWithUsernameAndPassword Failed: {e.Message}");
                 PanelManager.Instance.ShowErrorPopup("Failed to sign in due to: " + e.Message);
             }
             catch (RequestFailedException e)
             {
-                Debug.LogError($"SignInWithUsernameAndPassword Failed: {e.Message}");
+                Debug.LogWarning($"SignInWithUsernameAndPassword Failed: {e.Message}");
                 PanelManager.Instance.ShowErrorPopup("Failed to sign in due to: " + e.Message);
             }
             finally
@@ -292,11 +288,10 @@ namespace Flappy.Core.Manager
             {
                 await Task.Delay(1000); // Chờ 0.5 giây để dữ liệu đồng bộ từ server, nếu không tên sẽ null
 
-                if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName))
-                {
-                    await AuthenticationService.Instance.UpdatePlayerNameAsync("New_Player"); // hàm này yêu cầu input không được có space
-                    // PanelManager.Instance.OpenPanel("main");
-                }
+                // if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName))
+                // {
+                //     await AuthenticationService.Instance.UpdatePlayerNameAsync("New_Player"); // hàm này yêu cầu input không được có space
+                // }
             }
             catch (AuthenticationException ex)
             {

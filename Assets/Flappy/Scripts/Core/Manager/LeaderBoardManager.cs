@@ -54,7 +54,7 @@ namespace Flappy.Core.Manager
                 Debug.LogError($"Failed to get current player score: {e.Message}");
             }
 
-            var defaultEntry = new LeaderboardEntry(AuthenticationService.Instance.PlayerId, AuthenticationService.Instance.PlayerName ?? "Anonymous", -1, 0);
+            var defaultEntry = new LeaderboardEntry(AuthenticationService.Instance.PlayerId, AuthenticationService.Instance.PlayerName ?? "New_Player", -1, 0);
             return defaultEntry;
         }
 

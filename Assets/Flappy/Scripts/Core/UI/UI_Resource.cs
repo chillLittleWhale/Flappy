@@ -1,9 +1,9 @@
-using System.Collections;
+using System.Threading.Tasks;
 using Flappy.Core.Manager;
 using TMPro;
 using UnityEngine;
 
-namespace AjaxNguyen.Core.UI
+namespace Flappy.Core.UI
 {
     public class UI_Resource : MonoBehaviour
     {
@@ -14,9 +14,15 @@ namespace AjaxNguyen.Core.UI
 
         void Start()
         {
-            StartCoroutine(DelayRegisterEvent());
+            DelayUIUpdate();
             ResourceManager.Instance.OnResourceDataChanged += UpdateResourceUI;
             StaminaManager.Instance.OnStaminaChanged += UpdateStaminaUI;
+        }
+
+        void OnDestroy()
+        {
+            ResourceManager.Instance.OnResourceDataChanged -= UpdateResourceUI;
+            StaminaManager.Instance.OnStaminaChanged -= UpdateStaminaUI;
         }
 
         private void UpdateResourceUI(object sender, ResourceData e)
@@ -30,10 +36,9 @@ namespace AjaxNguyen.Core.UI
             staminaText.text = stamina;
         }
 
-        private IEnumerator DelayRegisterEvent()
+        private async void DelayUIUpdate()
         {
-            // chờ 1 frame để ResourceManager tạo xong dữ liệu
-            yield return null;
+            await Task.Delay(100);
             UpdateResourceUI(this, ResourceManager.Instance.data);
             UpdateStaminaUI(this, StaminaManager.Instance.GetStaminaStatus());
         }

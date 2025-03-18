@@ -35,7 +35,7 @@ namespace Flappy.Core
         #endregion
 
         #region Events
-        public event EventHandler<int> OnScoreChanged;
+        // public event EventHandler<int> OnScoreChanged;
         public event EventHandler<GameState> OnStateChange;
         [SerializeField] IntEventChanel OnRecordBreak;
         [SerializeField] IntEventChanel OnScoreChangedChanel;

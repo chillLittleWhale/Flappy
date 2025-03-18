@@ -66,6 +66,11 @@ MonoBehaviour:
   - groupId: Menu
     clips:
     - {fileID: 8300000, guid: 32ca21ca1ee6acc48a3f5fececa9092a, type: 3}
+    - {fileID: 8300000, guid: 3beb5c56c56137d41b6500bc9fee78bd, type: 3}
+  - groupId: Map
+    clips:
+    - {fileID: 8300000, guid: 44f7c8cb8de524a469e6bc533876acf9, type: 3}
+    - {fileID: 8300000, guid: e3dddb7d820996c4cb1248a9f65a6be5, type: 3}
 --- !u!82 &2498986972879816372
 AudioSource:
   m_ObjectHideFlags: 0

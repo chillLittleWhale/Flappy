@@ -47,7 +47,7 @@ namespace Flappy.Core.Panels
             }
             else
             {
-                PanelManager.Instance.ShowErrorPopup("Không đủ vàng để gacha.");
+                PanelManager.Instance.ShowErrorPopup("Not enough gold for normal gacha.");
             }
         }
 
@@ -63,7 +63,7 @@ namespace Flappy.Core.Panels
             }
             else
             {
-                PanelManager.Instance.ShowErrorPopup("Không đủ kim cương để gacha.");
+                PanelManager.Instance.ShowErrorPopup("Not enough diamond for advanced gacha.");
             }
         }
 
@@ -76,8 +76,8 @@ namespace Flappy.Core.Panels
             }
             if (reward.isUnlocked == true) // already have this skin, convert to gold reward
             {
-                ResourceManager.Instance.AddResource(RewardType.Gold, reward.unlockCost);
-                PanelManager.Instance.ShowErrorPopup($"Already have this skin, convert to gold x{reward.unlockCost}.");
+                ResourceManager.Instance.AddResource(RewardType.Gold, reward.fallbackGold);
+                PanelManager.Instance.ShowErrorPopup($"Already have this skin, convert to gold x{reward.fallbackGold}.");
             }
             else
             {

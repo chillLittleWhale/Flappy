@@ -172,61 +172,61 @@ namespace Flappy.Core.Manager
             }
         }
 
-        public void ResetAllData_Local()
-        {
-            try
-            {
-                string rawData = File.ReadAllText(Path.Combine(Application.persistentDataPath, "DefaultData.json"));
+        // public void ResetAllData_Local()
+        // {
+        //     try
+        //     {
+        //         string rawData = File.ReadAllText(Path.Combine(Application.persistentDataPath, "DefaultData.json"));
 
-                var defaultJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData);
-                Debug.Log($"defaultJson: {defaultJson}");
+        //         var defaultJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData);
+        //         Debug.Log($"defaultJson: {defaultJson}");
 
-                // Ghi đè ResourceData.json 
-                if (defaultJson.ContainsKey("ResourceData"))
-                {
-                    var tempData = JsonConvert.DeserializeObject<ResourceData>(defaultJson["ResourceData"].ToString());
-                    jsonDataService.Save(tempData, FILE_NAME_RESOURCE);
-                    Debug.Log("ResourceData.json đã được reset!");
-                }
+        //         // Ghi đè ResourceData.json 
+        //         if (defaultJson.ContainsKey("ResourceData"))
+        //         {
+        //             var tempData = JsonConvert.DeserializeObject<ResourceData>(defaultJson["ResourceData"].ToString());
+        //             jsonDataService.Save(tempData, FILE_NAME_RESOURCE);
+        //             Debug.Log("ResourceData.json đã được reset!");
+        //         }
 
-                // Ghi đè SkinData.json 
-                if (defaultJson.ContainsKey("SkinData"))
-                {
-                    var tempData = JsonConvert.DeserializeObject<SkinDataJson>(defaultJson["SkinData"].ToString());
-                    jsonDataService.Save(tempData, FILE_NAME_SKIN);
-                    Debug.Log("SkinData.json đã được reset!");
-                }
+        //         // Ghi đè SkinData.json 
+        //         if (defaultJson.ContainsKey("SkinData"))
+        //         {
+        //             var tempData = JsonConvert.DeserializeObject<SkinDataJson>(defaultJson["SkinData"].ToString());
+        //             jsonDataService.Save(tempData, FILE_NAME_SKIN);
+        //             Debug.Log("SkinData.json đã được reset!");
+        //         }
 
-                // Ghi đè MapData.json 
-                if (defaultJson.ContainsKey("MapData"))
-                {
-                    var tempData = JsonConvert.DeserializeObject<MapDataJson>(defaultJson["MapData"].ToString());
-                    jsonDataService.Save(tempData, FILE_NAME_MAP);
-                    Debug.Log("MapData.json đã được reset!");
-                }
+        //         // Ghi đè MapData.json 
+        //         if (defaultJson.ContainsKey("MapData"))
+        //         {
+        //             var tempData = JsonConvert.DeserializeObject<MapDataJson>(defaultJson["MapData"].ToString());
+        //             jsonDataService.Save(tempData, FILE_NAME_MAP);
+        //             Debug.Log("MapData.json đã được reset!");
+        //         }
 
-                // Ghi đè PlayerInfoData.json 
-                if (defaultJson.ContainsKey("PlayerInfoData"))
-                {
-                    var tempData = JsonConvert.DeserializeObject<PlayerInfoData>(defaultJson["PlayerInfoData"].ToString());
-                    jsonDataService.Save(tempData, FILE_NAME_PLAYER_INFO);
-                    Debug.Log("PlayerInfoData.json đã được reset!");
-                }
+        //         // Ghi đè PlayerInfoData.json 
+        //         if (defaultJson.ContainsKey("PlayerInfoData"))
+        //         {
+        //             var tempData = JsonConvert.DeserializeObject<PlayerInfoData>(defaultJson["PlayerInfoData"].ToString());
+        //             jsonDataService.Save(tempData, FILE_NAME_PLAYER_INFO);
+        //             Debug.Log("PlayerInfoData.json đã được reset!");
+        //         }
 
-                // Ghi đè DailyRewardData.json 
-                if (defaultJson.ContainsKey("DailyRewardData"))
-                {
-                    var tempData = JsonConvert.DeserializeObject<DailyRewardData>(defaultJson["DailyRewardData"].ToString());
-                    jsonDataService.Save(tempData, FILE_NAME_DAILY_REWARD);
-                    Debug.Log("DailyRewardData.json đã được reset!");
-                }
+        //         // Ghi đè DailyRewardData.json 
+        //         if (defaultJson.ContainsKey("DailyRewardData"))
+        //         {
+        //             var tempData = JsonConvert.DeserializeObject<DailyRewardData>(defaultJson["DailyRewardData"].ToString());
+        //             jsonDataService.Save(tempData, FILE_NAME_DAILY_REWARD);
+        //             Debug.Log("DailyRewardData.json đã được reset!");
+        //         }
 
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"Lỗi khi reset dữ liệu: {ex.Message}");
-            }
-        }
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //         Debug.LogError($"Lỗi khi reset dữ liệu: {ex.Message}");
+        //     }
+        // }
 
         bool TrySaveAllData_Local()
         {
@@ -272,7 +272,7 @@ namespace Flappy.Core.Manager
             }
         }
 
-        public async Task<bool>  TrysaveData_Both<T>(T data,string fileName)
+        public async Task<bool> TrysaveData_Both<T>(T data, string fileName)
         {
             var saveData = new Dictionary<string, object>
             {
@@ -302,6 +302,38 @@ namespace Flappy.Core.Manager
 
             Debug.LogWarning($"LocalSave: save {fileName} FAIL");
             return false;
+        }
+
+        public void ResetAllData_Local()
+        {
+            try
+            {
+                ResetData_Local(FILE_NAME_RESOURCE);
+                ResetData_Local(FILE_NAME_SKIN);
+                ResetData_Local(FILE_NAME_MAP);
+                ResetData_Local(FILE_NAME_PLAYER_INFO);
+                ResetData_Local(FILE_NAME_DAILY_REWARD);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Lỗi khi reset dữ liệu: {ex.Message}");
+            }
+        }
+
+        private void ResetData_Local(string fileName)
+        {
+            try
+            {
+                TextAsset defaultData = Resources.Load<TextAsset>("Default" + fileName);
+                string defaultJson = defaultData.text;
+                string filePath = Path.Combine(Application.persistentDataPath, string.Concat(fileName, ".json"));
+
+                File.WriteAllText(filePath, defaultJson);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Lỗi khi reset dữ liệu: {ex.Message}");
+            }
         }
 
         public async Task HandleUserLogout() //  void

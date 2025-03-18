@@ -1,0 +1,25 @@
+{
+  "skinList": [
+    {
+      "id": "0",
+      "isUnlocked": true
+    },
+    {
+      "id": "1",
+      "isUnlocked": false
+    },
+    {
+      "id": "2",
+      "isUnlocked": false
+    },
+    {
+      "id": "3",
+      "isUnlocked": false
+    },
+    {
+      "id": "4",
+      "isUnlocked": false
+    }
+  ],
+  "selectedSkinID": "0"
+}

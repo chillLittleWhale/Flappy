@@ -51,31 +51,36 @@ MonoBehaviour:
       skinName: Default
       skinIcon: {fileID: 21300000, guid: 5bc5a02bd982e584fafb039c27992d53, type: 3}
       libraryAsset: {fileID: 7108339969198208228, guid: fc276ac63098e964d8043a1a697097b7, type: 3}
-      unlockCost: 0
+      description: Shoutout to Dong Nguyen
+      fallbackGold: 999
       isUnlocked: 1
     - id: 1
       skinName: Blu Lock
       skinIcon: {fileID: 21300000, guid: 834eb5611450ae546a3f9547301f000e, type: 3}
       libraryAsset: {fileID: 7108339969198208228, guid: 2ecebe6a1e3405e488792d4d3144ef7b, type: 3}
-      unlockCost: 0
+      description: Have you ever played Flappy with all of your life?
+      fallbackGold: 500
       isUnlocked: 0
     - id: 2
       skinName: Angry bird
       skinIcon: {fileID: 21300000, guid: e06496b08a1a09f4589dda2ec54b187d, type: 3}
       libraryAsset: {fileID: 7108339969198208228, guid: e3f4b27871ef1e245956b1b6a92fad4c, type: 3}
-      unlockCost: 0
+      description: Not that angry like it sound, actualy just a chill bird
+      fallbackGold: 500
       isUnlocked: 0
     - id: 3
       skinName: Knight
       skinIcon: {fileID: 6846741067194778677, guid: 2c89b5e5e44266945a65b9afb4b2ce0e, type: 3}
       libraryAsset: {fileID: 7108339969198208228, guid: f3f1310a69be57b43ae2483167194482, type: 3}
-      unlockCost: 0
+      description: Small, but mighty
+      fallbackGold: 500
       isUnlocked: 0
     - id: 4
       skinName: 2077
       skinIcon: {fileID: 3922381547032190047, guid: d800491ad088aec44b5dc13cd78a037b, type: 3}
       libraryAsset: {fileID: 7108339969198208228, guid: 722fd40a22d51994bb5a9efadbbc3f91, type: 3}
-      unlockCost: 0
+      description: Adam gonna pay for it ...
+      fallbackGold: 500
       isUnlocked: 0
     selectedSkinID: 0
   tempDataJson:

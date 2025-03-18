@@ -15,6 +15,8 @@ namespace Flappy.Core.Panels
         [SerializeField] GameObject skinItemPrefab; // Prefab của mỗi skin
         [SerializeField] TextMeshProUGUI skinCount_Text;
         [SerializeField] GameObject iconSelected;
+        [SerializeField] TextMeshProUGUI skinDescription_Text;
+        [SerializeField] string defaultDescription = "Unknown";
 
         public RectTransform contentPanel;
         public RectTransform prefabItem;  // item mẫu để lấy width cho tính toán
@@ -46,13 +48,14 @@ namespace Flappy.Core.Panels
 
         public void FirstReload()  // quá trình đăng nhập làm cho data được set và trong các Manager chậm hơn, hàm Start của các UIPanel chưa có dữ liệu chuẩn để hiển thị, nên phải Update lần đầu bằng event riêng
         {
-            Reload(this, data); //TODO: không hiểu sao đoạn code này có vẻ bị thừa?
+            Reload(this, data);
         }
 
         public void Reload(object sender, SkinData e)
         {
             PopulateItems();
             UpdateUI_SkinCount();
+
         }
 
         void PopulateItems()
@@ -63,15 +66,7 @@ namespace Flappy.Core.Panels
                 Destroy(child.gameObject);
             }
 
-            // Tạo các item và gán dữ liệu
-            // foreach (Skin skin in data.skinList)
-            // {
-            //     GameObject item = Instantiate(skinItemPrefab, content);
-            //     SkinItemUI skinItemUI = item.GetComponent<SkinItemUI>();
-
-            //     skinItemUI.Initialize(skin);
-            // }
-            for(int i = 0; i < data.skinList.Count; i++) 
+            for (int i = 0; i < data.skinList.Count; i++)
             {
                 GameObject item = Instantiate(skinItemPrefab, content);
                 SkinItemUI skinItemUI = item.GetComponent<SkinItemUI>();
@@ -83,7 +78,6 @@ namespace Flappy.Core.Panels
         void UpdateUI_SkinCount()
         {
             unlockedSkinCount = data.skinList.Count(skin => skin.isUnlocked == true);
-
             skinCount_Text.text = unlockedSkinCount.ToString() + "/" + data.skinList.Count.ToString();
         }
 
@@ -101,8 +95,8 @@ namespace Flappy.Core.Panels
             if (SkinManager.Instance.TrySelectSkin(newSelectedId))
             {
                 data.selectedSkinID = newSelectedId;
+                iconSelected.SetActive(true);
             }
-
         }
 
         private float GetCurrentCenterPos()  // điểm trung tâm trên tọa độ trục x của content panel
@@ -125,9 +119,11 @@ namespace Flappy.Core.Panels
         }
 
 
-
         #region EventChanel callback
-        public void OnUiItemClicked(int index) => SnapToChild(index); 
+        public void OnUiItemClicked(int index)
+        {
+            SnapToChild(index);
+        }
 
         public void OnCurrentUiItemChange(int index)
         {
@@ -138,6 +134,15 @@ namespace Flappy.Core.Panels
             else
             {
                 iconSelected.SetActive(false);
+            }
+
+            if(data.skinList[index].isUnlocked)
+            {
+            skinDescription_Text.text = data.skinList[index].description;
+            }
+            else
+            {
+                skinDescription_Text.text = defaultDescription;
             }
         }
         #endregion

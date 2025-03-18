@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AjaxNguyen.Core.UI
+namespace Flappy.Core.UI
 {
     public class UI_Lobby : MonoBehaviour
     {
@@ -11,7 +11,7 @@ namespace AjaxNguyen.Core.UI
         [SerializeField] private Button mapButton;
         [SerializeField] private Button playButton;
         [SerializeField] private int staminaCost = 1;
-        private PlayerInfoData data;
+        [SerializeField] PlayerInfoData data;
 
         void Awake()
         {
@@ -20,11 +20,22 @@ namespace AjaxNguyen.Core.UI
 
         void Start()
         {
+
             PlayerInfoManager.Instance.OnPlayerInfoDataChanged += Reload;
 
             data = PlayerInfoManager.Instance.data; // binding data
-
             Reload(this, data);
+        }
+
+        public void FirstReload()  // quá trình đăng nhập làm cho data được set và trong các Manager chậm hơn, hàm Start của các UIPanel chưa có dữ liệu chuẩn để hiển thị, nên phải Update lần đầu bằng event riêng
+        {
+            data = PlayerInfoManager.Instance.data;
+            Reload(this, data);
+        }
+
+        void OnDestroy()
+        {
+            PlayerInfoManager.Instance.OnPlayerInfoDataChanged -= Reload;
         }
 
         public void Reload(object sender, PlayerInfoData e)
@@ -45,5 +56,11 @@ namespace AjaxNguyen.Core.UI
                 UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
             }
         }
+
+        // private async void DelayUIUpdate()
+        // {
+        //     await Task.Delay(100);
+        //     Reload(this, data);
+        // }
     }
 }

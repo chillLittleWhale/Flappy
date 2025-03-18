@@ -44,8 +44,10 @@ namespace Flappy
             if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(password))
             {
                 await AuthManager.Instance.SignInWithUsernameAndPasswordAsync(name, password);
-
-                // PanelManager.Instance.ClosePanel(PanelType.Authen);
+            }
+            else
+            {
+                PanelManager.Instance.ShowErrorPopup("Please enter a username and password.");
             }
 
             isSigningIn = false;
@@ -70,6 +72,9 @@ namespace Flappy
                 {
                     PanelManager.Instance.ShowErrorPopup("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
                 }
+            }
+            else{
+                PanelManager.Instance.ShowErrorPopup("Please enter a username and password.");
             }
 
             isSigningUp = false;
